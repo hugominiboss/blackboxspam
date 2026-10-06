@@ -96,9 +96,9 @@ export default function ProfilePage() {
                 <p className="text-3xl font-mono font-bold text-white">{userCredits} <span className="text-emerald-500 text-sm">CR</span></p>
               </div>
             </div>
-            <button className="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-lg transition-all text-sm font-semibold">
+            <Link href="/perfil/pagamentos" className="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-lg transition-all text-sm font-semibold inline-block">
               + Adicionar Créditos
-            </button>
+            </Link>
           </div>
 
           {/* Placeholder for other profile details */}
