@@ -56,7 +56,7 @@ export default function AcademiaPage() {
             <Link
               key={modulo.id}
               href={`/academia/modulo/${modulo.id}`}
-              className="group relative bg-black/80 backdrop-blur-sm border-[0.5px] border-zinc-800 p-6 sm:p-8 rounded-3xl hover:border-zinc-700 transition-all duration-500 hover:-translate-y-2 overflow-hidden min-w-0"
+              className="group relative bg-zinc-900 border border-zinc-800 p-6 sm:p-8 rounded-3xl hover:border-zinc-700 transition-all duration-500 hover:-translate-y-2 overflow-hidden min-w-0"
             >
               <div className={`absolute -right-10 -top-10 w-32 h-32 bg-gradient-to-br ${modulo.cor} opacity-10 blur-3xl group-hover:opacity-20 transition-opacity`} />
 

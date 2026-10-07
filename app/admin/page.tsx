@@ -155,7 +155,7 @@ export default function AdminPage() {
 
       <main className="w-full max-w-6xl mx-auto space-y-8 min-w-0">
         {/* Gestão de Keys */}
-        <section className="bg-black/80 backdrop-blur-sm border-[0.5px] border-zinc-800 p-4 sm:p-8 rounded-3xl shadow-xl min-w-0">
+        <section className="bg-zinc-900 border border-zinc-800 p-4 sm:p-8 rounded-3xl shadow-xl min-w-0">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
             <div className="flex items-center gap-3">
               <Key className="w-7 h-7 text-zinc-300" />
@@ -183,7 +183,7 @@ export default function AdminPage() {
           {showCreateForm && (
             <form
               onSubmit={handleCreateLicense}
-              className="bg-zinc-950/60 border-[0.5px] border-zinc-800 rounded-2xl p-6 mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+              className="bg-zinc-950/60 border border-zinc-800 rounded-2xl p-6 mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
             >
               <div className="sm:col-span-2 lg:col-span-3">
                 <label className="block text-xs font-bold text-zinc-500 uppercase tracking-widest mb-1">License Key</label>
@@ -391,7 +391,7 @@ export default function AdminPage() {
         </section>
 
         {/* CMS de Conteúdo */}
-        <div className="bg-black/80 backdrop-blur-sm border-[0.5px] border-zinc-800 p-6 sm:p-8 rounded-3xl shadow-xl min-w-0">
+        <div className="bg-zinc-900 border border-zinc-800 p-6 sm:p-8 rounded-3xl shadow-xl min-w-0">
           <div className="flex items-center gap-3 mb-4">
             <FileText className="w-7 h-7 text-zinc-300" />
             <h2 className="text-2xl font-bold text-white">CMS de Conteúdo</h2>
@@ -403,7 +403,7 @@ export default function AdminPage() {
         </div>
 
         {/* Controle Global */}
-        <div className="bg-black/80 backdrop-blur-sm border-[0.5px] border-zinc-800 p-6 sm:p-8 rounded-3xl shadow-xl lg:col-span-2 min-w-0">
+        <div className="bg-zinc-900 border border-zinc-800 p-6 sm:p-8 rounded-3xl shadow-xl lg:col-span-2 min-w-0">
           <div className="flex items-center gap-3 mb-4">
             <Settings className="w-7 h-7 text-zinc-300" />
             <h2 className="text-2xl font-bold text-white">Controle Global</h2>

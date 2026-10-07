@@ -20,7 +20,7 @@ function ToolCard({ icon, title, desc, placeholder, buttonLabel, process }: Tool
   const [output, setOutput] = useState('')
 
   return (
-    <div className="bg-black/80 backdrop-blur-sm p-4 rounded-xl border-[0.5px] border-zinc-800 flex flex-col min-w-0">
+    <div className="bg-zinc-900 p-4 rounded-xl border border-zinc-800 flex flex-col min-w-0">
       <div className="flex items-center gap-3 mb-1">
         <div className="p-2 bg-zinc-800/60 rounded-lg text-zinc-300 shrink-0">{icon}</div>
         <div className="min-w-0">
@@ -65,7 +65,7 @@ function PasswordLengthCard() {
   }
 
   return (
-    <div className="bg-black/80 backdrop-blur-sm p-4 rounded-xl border-[0.5px] border-zinc-800 flex flex-col min-w-0">
+    <div className="bg-zinc-900 p-4 rounded-xl border border-zinc-800 flex flex-col min-w-0">
       <div className="flex items-center gap-3 mb-1">
         <div className="p-2 bg-zinc-800/60 rounded-lg text-zinc-300 shrink-0">
           <KeyRound className="w-5 h-5" />

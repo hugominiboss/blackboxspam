@@ -91,7 +91,7 @@ export default function ProfilePage() {
           <LogoutButton variant="outline" />
         </div>
 
-        <div className="bg-black/80 backdrop-blur-sm border-[0.5px] border-zinc-800 p-5 sm:p-8 rounded-3xl shadow-xl w-full min-w-0">
+        <div className="bg-zinc-900 border border-zinc-800 p-5 sm:p-8 rounded-3xl shadow-xl w-full min-w-0">
           {/* License Info Card */}
           <div className="mb-6 pb-6 border-b border-zinc-800 flex flex-wrap items-center gap-4">
             <div className="p-3 bg-zinc-800/60 rounded-lg text-zinc-300">
@@ -110,7 +110,7 @@ export default function ProfilePage() {
               <div className="flex items-center gap-2 shrink-0">
                 <button
                   onClick={() => setRevealed((v) => !v)}
-                  className="text-xs text-zinc-400 hover:text-white border-[0.5px] border-zinc-800 hover:border-zinc-600 rounded-lg px-3 py-1.5 transition-colors"
+                  className="text-xs text-zinc-400 hover:text-white border border-zinc-800 hover:border-zinc-600 rounded-lg px-3 py-1.5 transition-colors"
                 >
                   {revealed ? 'Ocultar' : 'Revelar'}
                 </button>

@@ -158,7 +158,7 @@ export default function FerramentasPage() {
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-2 shrink-0">
-            <span className="flex items-center gap-1.5 bg-black/80 backdrop-blur-sm border-[0.5px] border-zinc-800 px-4 py-2 rounded-full">
+            <span className="flex items-center gap-1.5 bg-zinc-900 border border-zinc-800 px-4 py-2 rounded-full">
               <CoinIcon size={16} />
               <span className="text-white font-mono font-bold text-sm whitespace-nowrap">{credits === null ? '—' : credits}</span>
             </span>
@@ -179,7 +179,7 @@ export default function FerramentasPage() {
 
         <div className="grid gap-3">
           {ferramentas.length === 0 ? (
-            <div className="bg-black/80 backdrop-blur-sm p-12 rounded-3xl text-center border-[0.5px] border-zinc-800">
+            <div className="bg-zinc-900 p-12 rounded-3xl text-center border border-zinc-800">
               <Lock className="w-12 h-12 text-zinc-700 mx-auto mb-4" />
               <p className="text-zinc-500">Nenhuma ferramenta disponível no momento.</p>
             </div>
@@ -190,7 +190,7 @@ export default function FerramentasPage() {
               return (
               <div
                 key={ferramenta.id}
-                className="group bg-black/70 backdrop-blur-sm border-[0.5px] border-zinc-800 p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-between hover:bg-zinc-800/50 hover:border-zinc-700 transition-all min-w-0"
+                className="group bg-zinc-900/70 border border-zinc-800 p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-between hover:bg-zinc-800/50 hover:border-zinc-700 transition-all min-w-0"
               >
                 <div className="flex items-center gap-4 min-w-0 flex-1">
                   <div className="w-10 h-10 shrink-0 rounded-full bg-zinc-800 flex items-center justify-center text-zinc-500 group-hover:bg-purple-500 group-hover:text-white transition-all">

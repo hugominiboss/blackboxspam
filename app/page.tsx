@@ -71,12 +71,12 @@ export default function Home() {
         <div className="text-center md:text-left min-w-0 w-full md:w-auto">
           <h1 className="text-4xl sm:text-5xl font-bold tracking-tighter text-white mb-2 break-words">
             <span className="text-white">BlackBox</span>{' '}
-            <span className="text-[#3B82F6]">Vault</span>
+            <span className="text-[#FF6A00]">Vault</span>
           </h1>
            <p className="text-zinc-400">Bem-vindo ao ecossistema de escala.</p>
          </div>
         {/* Widget de Créditos / Sessão */}
-        <div className="w-full sm:w-auto max-w-full bg-black/80 backdrop-blur-sm border-[0.5px] border-zinc-800 p-4 rounded-2xl flex flex-wrap items-center gap-x-4 gap-y-3 shadow-xl">
+        <div className="w-full sm:w-auto max-w-full bg-zinc-900 border border-zinc-800 p-4 rounded-2xl flex flex-wrap items-center gap-x-4 gap-y-3 shadow-xl">
           <div className="p-2 bg-zinc-800/60 rounded-lg text-zinc-300">
             <CoinIcon size={22} />
           </div>
@@ -102,7 +102,7 @@ export default function Home() {
           <Link 
             href={hub.path} 
             key={hub.id}
-            className="group relative bg-black/80 backdrop-blur-sm border-[0.5px] border-zinc-800 p-6 sm:p-8 rounded-3xl hover:border-zinc-700 transition-all duration-500 hover:-translate-y-2 overflow-hidden"
+            className="group relative bg-zinc-900 border border-zinc-800 p-6 sm:p-8 rounded-3xl hover:border-zinc-700 transition-all duration-500 hover:-translate-y-2 overflow-hidden"
           >
             <div className={`absolute -right-10 -top-10 w-32 h-32 bg-gradient-to-br ${hub.cor} opacity-10 blur-3xl group-hover:opacity-20 transition-opacity`} />
             
@@ -129,5 +129,55 @@ export default function Home() {
     </div>
   )
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
