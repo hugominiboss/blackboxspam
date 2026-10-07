@@ -1,7 +1,6 @@
 'use client'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { supabase } from '@/app/lib/supabase'
 import Link from 'next/link'
 
 export default function LoginPage() {
@@ -15,47 +14,24 @@ export default function LoginPage() {
     setLoading(true);
     setError(null);
 
-    // 1. Validar a License Key no Supabase
-    const { data: licenseData, error: dbError } = await supabase
-      .from('licenses')
-      .select('key, status, role, expires_at')
-      .eq('key', licenseKey)
-      .single();
-
-    if (dbError || !licenseData) {
-      setError('License Key inválida ou não encontrada.');
-      setLoading(false);
-      return;
-    }
-
-    if (!licenseData.status) {
-      setError('Sua License Key está inativa.');
-      setLoading(false);
-      return;
-    }
-
-    if (licenseData.expires_at && new Date(licenseData.expires_at) < new Date()) {
-      setError('Sua License Key expirou.');
-      setLoading(false);
-      return;
-    }
-
-    // 2. Se a chave for válida, definir o cookie seguro via API Route
+    // A validação (key, status, expiração e role) acontece no servidor,
+    // que grava os cookies httpOnly de sessão. O cliente só envia a key.
     const response = await fetch('/api/auth/set-license-cookie', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ key: licenseData.key, role: licenseData.role }),
+      body: JSON.stringify({ key: licenseKey.trim() }),
     });
 
     if (!response.ok) {
-      const data = await response.json();
-      setError(data.message || 'Erro ao processar a License Key.');
+      const data = await response.json().catch(() => ({}));
+      setError(data.message || 'License Key inválida ou não encontrada.');
       setLoading(false);
       return;
     }
 
-    // 3. Redirecionar com base na role
-    if (licenseData.role === 'admin') {
+    // Redireciona com base na role derivada no servidor.
+    const { role } = await response.json().catch(() => ({ role: 'user' }));
+    if (role === 'admin') {
       router.push('/admin');
     } else {
       router.push('/'); // Ou '/dashboard', '/perfil' conforme a lógica
@@ -64,8 +40,8 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100 flex items-center justify-center p-6">
-      <div className="bg-zinc-900 border border-zinc-800 p-8 rounded-3xl shadow-xl max-w-md w-full">
+    <div className="min-h-screen w-full max-w-full overflow-x-clip bg-zinc-950 text-zinc-100 flex items-center justify-center px-4 py-6 sm:p-6">
+      <div className="bg-zinc-900 border border-zinc-800 p-6 sm:p-8 rounded-3xl shadow-xl max-w-md w-full min-w-0">
         <h1 className="text-3xl font-extrabold tracking-tighter text-white mb-6 text-center">
           Acessar Blackbox<span className="text-blue-500">Spam</span>
         </h1>

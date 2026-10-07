@@ -1,8 +1,8 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Key, FileText, Settings, LogOut, Loader2, PlusCircle, Edit, Trash2, CheckCircle, XCircle } from 'lucide-react'
+import { Key, FileText, Settings, Loader2, PlusCircle, Edit, Trash2, CheckCircle, XCircle } from 'lucide-react'
+import LogoutButton from '@/app/components/logout-button'
 
 interface License {
   key: string;
@@ -24,7 +24,6 @@ export default function AdminPage() {
   });
   const [editingLicense, setEditingLicense] = useState<License | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
-  const router = useRouter();
 
   const fetchLicenses = async () => {
     setLoading(true);
@@ -48,13 +47,6 @@ export default function AdminPage() {
     fetchLicenses();
   }, []);
 
-  const handleLogout = async () => {
-    setLoading(true);
-    await fetch('/api/auth/clear-license-cookie', {
-      method: 'POST',
-    });
-    router.push('/login');
-  };
   const handleCreateLicense = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormError(null);
@@ -153,24 +145,17 @@ export default function AdminPage() {
   // }
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100 p-6 md:p-12">
-      <header className="max-w-5xl mx-auto mb-10 flex justify-between items-center">
-        <h1 className="text-4xl font-extrabold tracking-tighter text-white">
+    <div className="min-h-screen w-full max-w-full overflow-x-clip bg-zinc-950 text-zinc-100 px-4 py-6 sm:p-6 md:p-12">
+      <header className="w-full max-w-5xl mx-auto mb-10 flex flex-wrap justify-between items-center gap-4">
+        <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tighter text-white break-words">
           Admin <span className="text-blue-500">Dashboard</span>
         </h1>
-        <button
-          onClick={handleLogout}
-          className="bg-red-600 hover:bg-red-500 text-white font-bold py-2 px-4 rounded-lg flex items-center gap-2 transition-all"
-          disabled={loading}
-        >
-          <LogOut className="w-5 h-5" />
-          Sair
-        </button>
+        <LogoutButton variant="danger" />
       </header>
 
-      <main className="max-w-6xl mx-auto space-y-8">
+      <main className="w-full max-w-6xl mx-auto space-y-8 min-w-0">
         {/* Gestão de Keys */}
-        <section className="bg-zinc-900 border border-zinc-800 p-8 rounded-3xl shadow-xl">
+        <section className="bg-zinc-900 border border-zinc-800 p-4 sm:p-8 rounded-3xl shadow-xl min-w-0">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
             <div className="flex items-center gap-3">
               <Key className="w-7 h-7 text-yellow-500" />
@@ -274,8 +259,8 @@ export default function AdminPage() {
           )}
 
           {/* Tabela de Licenças */}
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm">
+          <div className="overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0">
+            <table className="w-full min-w-[720px] text-left text-sm">
               <thead>
                 <tr className="text-zinc-500 uppercase text-xs tracking-widest border-b border-zinc-800">
                   <th className="py-3 pr-4">Key</th>
@@ -298,7 +283,7 @@ export default function AdminPage() {
                 {licenses.map((lic) =>
                   editingLicense?.key === lic.key ? (
                     <tr key={lic.key} className="border-b border-zinc-800 bg-blue-500/5">
-                      <td className="py-3 pr-4 font-mono text-white">{lic.key}</td>
+                      <td className="py-3 pr-4 font-mono text-white text-xs max-w-[140px] truncate" title={lic.key}>{lic.key}</td>
                       <td className="py-3 pr-4">
                         <input
                           type="checkbox"
@@ -353,7 +338,7 @@ export default function AdminPage() {
                     </tr>
                   ) : (
                     <tr key={lic.key} className="border-b border-zinc-800 hover:bg-zinc-800/40 transition-colors">
-                      <td className="py-3 pr-4 font-mono text-white">{lic.key}</td>
+                      <td className="py-3 pr-4 font-mono text-white text-xs max-w-[140px] truncate" title={lic.key}>{lic.key}</td>
                       <td className="py-3 pr-4">
                         {lic.status ? (
                           <span className="text-emerald-400 text-xs font-bold">● Ativa</span>
@@ -406,7 +391,7 @@ export default function AdminPage() {
         </section>
 
         {/* CMS de Conteúdo */}
-        <div className="bg-zinc-900 border border-zinc-800 p-8 rounded-3xl shadow-xl">
+        <div className="bg-zinc-900 border border-zinc-800 p-6 sm:p-8 rounded-3xl shadow-xl min-w-0">
           <div className="flex items-center gap-3 mb-4">
             <FileText className="w-7 h-7 text-green-500" />
             <h2 className="text-2xl font-bold text-white">CMS de Conteúdo</h2>
@@ -418,7 +403,7 @@ export default function AdminPage() {
         </div>
 
         {/* Controle Global */}
-        <div className="bg-zinc-900 border border-zinc-800 p-8 rounded-3xl shadow-xl lg:col-span-2">
+        <div className="bg-zinc-900 border border-zinc-800 p-6 sm:p-8 rounded-3xl shadow-xl lg:col-span-2 min-w-0">
           <div className="flex items-center gap-3 mb-4">
             <Settings className="w-7 h-7 text-purple-500" />
             <h2 className="text-2xl font-bold text-white">Controle Global</h2>

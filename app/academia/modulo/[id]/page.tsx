@@ -2,7 +2,9 @@
 import { useEffect, useState, use } from 'react'
 import { supabase } from '@/app/lib/supabase'
 import Link from 'next/link'
-import { Play, ChevronLeft, Lock, Coins } from 'lucide-react'
+import { Play, ChevronLeft, Lock } from 'lucide-react'
+import LogoutButton from '@/app/components/logout-button'
+import CoinIcon from '@/app/components/coin-icon'
 
 interface Aula {
   id: string; titulo: string; descricao: string; link_video: string; ordem: number;
@@ -124,24 +126,27 @@ export default function ModuloPage({ params }: { params: Promise<{ id: string }>
   if (loading) return <div className="h-screen bg-zinc-950 text-white flex items-center justify-center font-mono">CARREGANDO_EPISODIOS...</div>
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100 p-6 md:p-12">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen w-full max-w-full overflow-x-clip bg-zinc-950 text-zinc-100 px-4 py-6 sm:p-6 md:p-12">
+      <div className="w-full max-w-4xl mx-auto min-w-0">
         <Link href="/academia" className="flex items-center gap-2 text-zinc-500 hover:text-white transition-colors text-sm mb-12 group">
           <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Voltar para a Academia
         </Link>
 
         <header className="mb-8">
-          <div className="flex items-center justify-between gap-4 flex-wrap">
-            <h1 className="text-4xl font-extrabold text-white capitalize tracking-tight">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <h1 className="text-3xl sm:text-4xl font-extrabold text-white capitalize tracking-tight break-words min-w-0 flex-1">
               {id.replace('_', ' ')}
             </h1>
-            <div className="flex items-center gap-2 bg-zinc-900 border border-zinc-800 px-4 py-2 rounded-full">
-              <Coins className="w-4 h-4 text-yellow-500" />
-              <span className="text-white font-mono font-bold text-sm">{credits === null ? '—' : credits} CR</span>
+            <div className="flex flex-wrap items-center gap-2 shrink-0">
+              <span className="flex items-center gap-2 bg-zinc-900 border border-zinc-800 px-4 py-2 rounded-full">
+                <CoinIcon size={16} />
+                <span className="text-white font-mono font-bold text-sm whitespace-nowrap">{credits === null ? '—' : credits}</span>
+              </span>
+              <LogoutButton />
             </div>
           </div>
           <div className="h-1 w-20 bg-blue-500 rounded-full mt-4" />
-          <p className="text-zinc-500 text-xs mt-3">Cada episódio custa {CUSTO_AULA} CR para desbloquear.</p>
+          <p className="text-zinc-500 text-xs mt-3 flex items-center gap-1.5">Cada episódio custa <CoinIcon size={14} /> {CUSTO_AULA} para desbloquear.</p>
         </header>
 
         {aviso && (
@@ -158,19 +163,20 @@ export default function ModuloPage({ params }: { params: Promise<{ id: string }>
             </div>
           ) : (
             aulas.map((aula, index) => (
-              <div 
-                key={aula.id} 
-                className="group bg-zinc-900/50 border border-zinc-800 p-4 rounded-2xl flex items-center justify-between hover:bg-zinc-800/50 hover:border-zinc-700 transition-all"
+              <div
+                key={aula.id}
+                className="group bg-zinc-900/50 border border-zinc-800 p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-between hover:bg-zinc-800/50 hover:border-zinc-700 transition-all min-w-0"
               >
-                <div className="flex items-center gap-5">
-                  <div className="w-10 h-10 rounded-full bg-zinc-800 flex items-center justify-center text-zinc-500 font-mono text-sm group-hover:bg-blue-500 group-hover:text-white transition-all">
+                <div className="flex items-center gap-4 min-w-0 flex-1">
+                  <div className="w-10 h-10 shrink-0 rounded-full bg-zinc-800 flex items-center justify-center text-zinc-500 font-mono text-sm group-hover:bg-blue-500 group-hover:text-white transition-all">
                     {index + 1}
                   </div>
-                  <div>
-                    <h3 className="text-white font-medium group-hover:text-blue-400 transition-colors">{aula.titulo}</h3>
-                    <p className="text-zinc-500 text-xs line-clamp-1">{aula.descricao}</p>
+                  <div className="min-w-0">
+                    <h3 className="text-white font-medium group-hover:text-blue-400 transition-colors break-words">{aula.titulo}</h3>
+                    <p className="text-zinc-500 text-xs line-clamp-1 break-words">{aula.descricao}</p>
                   </div>
                 </div>
+                <div className="flex sm:shrink-0 sm:justify-end">
                 {desbloqueadas.includes(aula.id) ? (
                   <a
                     href={aula.link_video}
@@ -189,10 +195,10 @@ export default function ModuloPage({ params }: { params: Promise<{ id: string }>
                         : 'bg-zinc-800 text-white hover:bg-blue-600'
                     }`}
                   >
-                    <Coins className="w-3 h-3 text-yellow-400" />
-                    {pagandoId === aula.id ? 'Processando...' : `${CUSTO_AULA} CR · Desbloquear`}
+                    {pagandoId === aula.id ? 'Processando...' : <><CoinIcon size={13} /> {CUSTO_AULA} · Desbloquear</>}
                   </button>
                 )}
+                </div>
               </div>
             ))
           )}

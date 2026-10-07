@@ -5,6 +5,8 @@ import {
   ArrowLeft, Bitcoin, Check, ChevronRight, Copy, CreditCard, Flame,
   Lock, QrCode, RefreshCw, ShieldCheck, Timer, Zap,
 } from 'lucide-react'
+import LogoutButton from '@/app/components/logout-button'
+import CoinIcon from '@/app/components/coin-icon'
 
 type Plan = {
   id: string
@@ -166,7 +168,7 @@ export default function PagamentosPage() {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100 pb-24">
+    <div className="min-h-screen w-full max-w-full overflow-x-clip bg-zinc-950 text-zinc-100 pb-24">
       <style>{`
         @keyframes bbxFadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes bbxPulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.4); opacity: .5; } }
@@ -175,7 +177,7 @@ export default function PagamentosPage() {
 
       {/* Header */}
       <header className="border-b border-zinc-900">
-        <div className="max-w-5xl mx-auto px-6 py-6 flex items-center justify-between gap-4">
+        <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 py-4 sm:py-6 flex flex-wrap items-center justify-between gap-3">
           <Link
             href="/perfil"
             className="flex items-center gap-2 text-zinc-500 hover:text-white transition-colors text-sm group"
@@ -183,7 +185,7 @@ export default function PagamentosPage() {
             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
             Meu Perfil
           </Link>
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
             <span className="hidden sm:flex items-center gap-1.5 text-[11px] font-bold tracking-widest uppercase text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-full">
               <ShieldCheck className="w-3.5 h-3.5" /> Zero KYC
             </span>
@@ -194,11 +196,12 @@ export default function PagamentosPage() {
                 <span className="text-emerald-400 text-xs">CR</span>
               </span>
             </div>
+            <LogoutButton />
           </div>
         </div>
       </header>
 
-      <main className="max-w-5xl mx-auto px-6 pt-10">
+      <main className="w-full max-w-5xl mx-auto min-w-0 px-4 sm:px-6 pt-8 sm:pt-10">
         {/* ESTÁGIO 1 — ESCOLHA DO PLANO */}
         {stage === 'plans' && (
           <section>
@@ -212,7 +215,7 @@ export default function PagamentosPage() {
               </p>
             </div>
 
-            <div className="grid gap-5 md:grid-cols-3">
+            <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
               {PLANS.map((p, i) => {
                 const total = totalCredits(p)
                 const destaque = p.bonusPct >= 20
@@ -321,10 +324,10 @@ export default function PagamentosPage() {
               </button>
             </div>
 
-            <div className="grid gap-5 md:grid-cols-5">
+            <div className="grid gap-5 grid-cols-1 md:grid-cols-5">
               {/* Resumo do pedido */}
               <div
-                className="md:col-span-2 rounded-3xl border border-zinc-800 bg-zinc-900 p-6 h-fit"
+                className="md:col-span-2 rounded-3xl border border-zinc-800 bg-zinc-900 p-5 sm:p-6 h-fit min-w-0"
                 style={{ animation: 'bbxFadeUp .45s ease both', animationDelay: '80ms' }}
               >
                 <p className="text-zinc-500 text-xs uppercase font-bold tracking-widest mb-4">
@@ -340,21 +343,19 @@ export default function PagamentosPage() {
                 </div>
                 <div className="flex items-center justify-between text-sm text-zinc-400 mb-1">
                   <span>Créditos base</span>
-                  <span className="font-mono">{plan.credits} CR</span>
+                  <span className="font-mono flex items-center gap-1"><CoinIcon size={14} /> {plan.credits}</span>
                 </div>
                 {plan.bonusPct > 0 && (
                   <div className="flex items-center justify-between text-sm text-amber-400">
                     <span>Bônus de crédito ({plan.bonusPct}%)</span>
-                    <span className="font-mono">+{Math.round((plan.credits * plan.bonusPct) / 100)} CR</span>
+                    <span className="font-mono flex items-center gap-1">+<CoinIcon size={14} /> {Math.round((plan.credits * plan.bonusPct) / 100)}</span>
                   </div>
                 )}
                 <div className="mt-4 pt-4 border-t border-zinc-800 flex items-center justify-between">
                   <span className="text-xs uppercase tracking-widest font-bold text-emerald-400">
                     Total a creditar
                   </span>
-                  <span className="text-2xl font-mono font-extrabold text-emerald-400">
-                    {totalCredits(plan)} CR
-                  </span>
+                  <span className="text-2xl font-mono font-extrabold text-emerald-400 flex items-center gap-1"><CoinIcon size={18} /> {totalCredits(plan)}</span>
                 </div>
 
                 {licenseKey && (
@@ -381,11 +382,11 @@ export default function PagamentosPage() {
               </div>
               {/* Painel de pagamento */}
               <div
-                className="md:col-span-3 rounded-3xl border border-zinc-800 bg-zinc-900 p-6"
+                className="md:col-span-3 rounded-3xl border border-zinc-800 bg-zinc-900 p-5 sm:p-6 min-w-0"
                 style={{ animation: 'bbxFadeUp .45s ease both', animationDelay: '160ms' }}
               >
                 {/* Tabs de método */}
-                <div className="grid grid-cols-3 gap-2 mb-6">
+                <div className="grid grid-cols-3 gap-1.5 sm:gap-2 mb-6 min-w-0">
                   {([
                     { id: 'pix', label: 'PIX', sub: 'Instantâneo', icon: <CreditCard className="w-4 h-4" /> },
                     { id: 'usdt', label: 'USDT', sub: 'TRC20', icon: <Zap className="w-4 h-4" /> },
@@ -397,7 +398,7 @@ export default function PagamentosPage() {
                         setMethod(m.id)
                         setQrFailed(false)
                       }}
-                      className={`flex flex-col items-center gap-0.5 py-3 rounded-xl border text-sm font-bold transition-all ${
+                      className={`flex min-w-0 flex-col items-center gap-0.5 px-1 py-3 rounded-xl border text-sm font-bold transition-all ${
                         method === m.id
                           ? 'border-emerald-500/60 bg-emerald-500/10 text-emerald-400 shadow-[0_0_20px_-6px_rgba(16,185,129,0.5)]'
                           : 'border-zinc-800 bg-zinc-950 text-zinc-400 hover:border-zinc-600'
@@ -452,11 +453,11 @@ export default function PagamentosPage() {
                           method === 'pix' ? pixPayload(plan.price) : WALLETS[method].address
                         )}
                         alt="QR Code simulado"
-                        className="w-52 h-52 rounded-lg bg-zinc-900"
+                        className="w-48 h-48 sm:w-52 sm:h-52 max-w-full rounded-lg bg-zinc-900"
                         onError={() => setQrFailed(true)}
                       />
                     ) : (
-                      <div className="w-52 h-52 rounded-lg bg-zinc-900 flex items-center justify-center p-6 text-zinc-500 text-xs">
+                      <div className="w-48 h-48 sm:w-52 sm:h-52 max-w-full rounded-lg bg-zinc-900 flex items-center justify-center p-6 text-zinc-500 text-xs">
                         QR temporariamente indisponível — copie o código abaixo
                       </div>
                     )}
@@ -555,7 +556,7 @@ export default function PagamentosPage() {
             className="flex justify-center"
             style={{ animation: 'bbxFadeUp .4s ease both' }}
           >
-            <div className="max-w-md w-full text-center bg-zinc-900 border border-zinc-800 rounded-3xl p-10 shadow-[0_0_60px_-20px_rgba(16,185,129,0.4)]">
+            <div className="w-full max-w-md text-center bg-zinc-900 border border-zinc-800 rounded-3xl p-6 sm:p-10 min-w-0 shadow-[0_0_60px_-20px_rgba(16,185,129,0.4)]">
               <div
                 className="mx-auto w-20 h-20 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center mb-6"
                 style={{ animation: 'bbxPop .5s ease both' }}
@@ -565,8 +566,8 @@ export default function PagamentosPage() {
               <p className="text-emerald-400 text-xs font-bold tracking-[0.2em] uppercase mb-2">
                 Pagamento confirmado
               </p>
-              <h1 className="text-3xl font-extrabold text-white mb-2">
-                +{added} CR creditados!
+              <h1 className="text-3xl font-extrabold text-white mb-2 flex items-center justify-center gap-1">
+                +{added} <CoinIcon size={20} /> creditados!
               </h1>
               <p className="text-zinc-400 text-sm mb-6">
                 Pacote{' '}
@@ -578,7 +579,7 @@ export default function PagamentosPage() {
                   Novo saldo
                 </p>
                 <p className="text-4xl font-mono font-extrabold text-white">
-                  {credits} <span className="text-emerald-400 text-lg">CR</span>
+                  {credits} <CoinIcon size={22} />
                 </p>
               </div>
               <div className="flex flex-col sm:flex-row gap-3">
