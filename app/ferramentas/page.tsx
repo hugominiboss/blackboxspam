@@ -209,10 +209,6 @@ export default function FerramentasPage() {
                   </div>
                 </div>
                 <div className="flex flex-wrap items-center gap-2 sm:gap-3 sm:shrink-0 sm:justify-end">
-                  <span className="flex items-center gap-1 text-xs font-mono text-zinc-300 bg-zinc-800/60 px-2 py-1 rounded-full whitespace-nowrap">
-                    <Zap className="w-3 h-3" />
-                    <CoinIcon size={13} /> {ferramenta.custo_creditos}
-                  </span>
                   {ativa ? (
                     ferramenta.link_download && ferramenta.link_download !== '#' ? (
                       <a
