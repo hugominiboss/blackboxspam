@@ -1,9 +1,9 @@
-# Documentação do Projeto BlackboxSpam
+# Documentação do Projeto BlackBox Vault
 
 ## Resumo Técnico e Estratégico
 
 ### 1. Visão Geral
-O BlackBoxSpam é uma plataforma SaaS focada em educação, mentoria e ferramentas de automação. O objetivo é centralizar a entrega de conteúdo (Academia) e o acesso a ferramentas exclusivas através de um sistema de permissões e créditos.
+O BlackBox Vault é uma plataforma SaaS focada em educação, mentoria e ferramentas de automação. O objetivo é centralizar a entrega de conteúdo (Academia) e o acesso a ferramentas exclusivas através de um sistema de permissões e créditos.
 
 ### 2. Estrutura de Acesso e Usuários
 **Autenticação:** Gerenciada via Supabase Auth.

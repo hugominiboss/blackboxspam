@@ -40,10 +40,10 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen w-full max-w-full overflow-x-clip bg-zinc-950 text-zinc-100 flex items-center justify-center px-4 py-6 sm:p-6">
-      <div className="bg-zinc-900 border border-zinc-800 p-6 sm:p-8 rounded-3xl shadow-xl max-w-md w-full min-w-0">
-        <h1 className="text-3xl font-extrabold tracking-tighter text-white mb-6 text-center">
-          Acessar Blackbox<span className="text-blue-500">Spam</span>
+    <div className="min-h-screen w-full max-w-full overflow-x-clip bg-black text-zinc-100 flex items-center justify-center px-4 py-6 sm:p-6">
+      <div className="bg-black/80 backdrop-blur-sm border-[0.5px] border-zinc-800 p-6 sm:p-8 rounded-3xl shadow-xl max-w-md w-full min-w-0">
+        <h1 className="text-3xl font-bold tracking-tighter text-white mb-6 text-center">
+          Acessar <span className="text-white">BlackBox</span> <span className="text-[#3B82F6]">Vault</span>
         </h1>
         <form onSubmit={handleSignIn} className="space-y-4">
           <div>

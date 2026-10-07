@@ -20,9 +20,9 @@ function ToolCard({ icon, title, desc, placeholder, buttonLabel, process }: Tool
   const [output, setOutput] = useState('')
 
   return (
-    <div className="bg-zinc-900 p-4 rounded-xl border border-zinc-800 flex flex-col min-w-0">
+    <div className="bg-black/80 backdrop-blur-sm p-4 rounded-xl border-[0.5px] border-zinc-800 flex flex-col min-w-0">
       <div className="flex items-center gap-3 mb-1">
-        <div className="p-2 bg-yellow-500/10 rounded-lg text-yellow-500 shrink-0">{icon}</div>
+        <div className="p-2 bg-zinc-800/60 rounded-lg text-zinc-300 shrink-0">{icon}</div>
         <div className="min-w-0">
           <h2 className="font-bold text-lg leading-tight text-white">{title}</h2>
           <p className="text-xs text-zinc-400">{desc}</p>
@@ -65,9 +65,9 @@ function PasswordLengthCard() {
   }
 
   return (
-    <div className="bg-zinc-900 p-4 rounded-xl border border-zinc-800 flex flex-col min-w-0">
+    <div className="bg-black/80 backdrop-blur-sm p-4 rounded-xl border-[0.5px] border-zinc-800 flex flex-col min-w-0">
       <div className="flex items-center gap-3 mb-1">
-        <div className="p-2 bg-yellow-500/10 rounded-lg text-yellow-500 shrink-0">
+        <div className="p-2 bg-zinc-800/60 rounded-lg text-zinc-300 shrink-0">
           <KeyRound className="w-5 h-5" />
         </div>
         <div className="min-w-0">
@@ -141,7 +141,7 @@ const filtrarPalavras = (input: string) =>
 
 export default function FerramentasGratuitasPage() {
   return (
-    <div className="min-h-screen w-full max-w-full overflow-x-clip bg-zinc-950 text-zinc-100 px-4 py-6 sm:p-6 md:p-12">
+    <div className="min-h-screen w-full max-w-full overflow-x-clip bg-black text-zinc-100 px-4 py-6 sm:p-6 md:p-12">
       <div className="w-full max-w-5xl mx-auto min-w-0">
         <Link href="/" className="flex items-center gap-2 text-zinc-500 hover:text-white transition-colors text-sm mb-8 group">
           <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Voltar para a vitrine
@@ -149,7 +149,7 @@ export default function FerramentasGratuitasPage() {
 
         <header className="mb-8 flex flex-wrap items-center justify-between gap-3">
           <div className="flex flex-wrap items-center gap-4 min-w-0">
-            <div className="p-3 bg-yellow-500/10 rounded-2xl text-yellow-500 shrink-0">
+            <div className="p-3 bg-zinc-800/60 rounded-2xl text-zinc-300 shrink-0">
               <Gift className="w-8 h-8" />
             </div>
             <div className="min-w-0">

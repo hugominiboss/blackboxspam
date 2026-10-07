@@ -146,9 +146,9 @@ export default function PagamentosPage() {
 
   if (authError) {
     return (
-      <div className="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col items-center justify-center p-6">
-        <div className="max-w-md w-full text-center bg-zinc-900 border border-zinc-800 rounded-3xl p-10">
-          <div className="mx-auto w-14 h-14 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center mb-6">
+      <div className="min-h-screen bg-black text-zinc-100 flex flex-col items-center justify-center p-6">
+        <div className="max-w-md w-full text-center bg-black/80 backdrop-blur-sm border-[0.5px] border-zinc-800 rounded-3xl p-10">
+          <div className="mx-auto w-14 h-14 rounded-2xl bg-zinc-800/60 text-zinc-300 flex items-center justify-center mb-6">
             <Lock className="w-7 h-7" />
           </div>
           <h1 className="text-2xl font-extrabold text-white mb-2">Sessão necessária</h1>
@@ -168,7 +168,7 @@ export default function PagamentosPage() {
   }
 
   return (
-    <div className="min-h-screen w-full max-w-full overflow-x-clip bg-zinc-950 text-zinc-100 pb-24">
+    <div className="min-h-screen w-full max-w-full overflow-x-clip bg-black text-zinc-100 pb-24">
       <style>{`
         @keyframes bbxFadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes bbxPulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.4); opacity: .5; } }
@@ -189,7 +189,7 @@ export default function PagamentosPage() {
             <span className="hidden sm:flex items-center gap-1.5 text-[11px] font-bold tracking-widest uppercase text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-full">
               <ShieldCheck className="w-3.5 h-3.5" /> Zero KYC
             </span>
-            <div className="flex items-center gap-2 bg-zinc-900 border border-zinc-800 px-3 py-1.5 rounded-full">
+            <div className="flex items-center gap-2 bg-black/80 backdrop-blur-sm border-[0.5px] border-zinc-800 px-3 py-1.5 rounded-full">
               <Zap className="w-3.5 h-3.5 text-emerald-400" />
               <span className="font-mono font-bold text-white text-sm">
                 {credits === null ? '—' : credits}{' '}
@@ -226,7 +226,7 @@ export default function PagamentosPage() {
                     className={`group relative overflow-hidden rounded-3xl border p-6 text-left transition-all duration-300 hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-emerald-500/60 ${
                       destaque
                         ? 'border-emerald-500/60 bg-gradient-to-b from-emerald-500/15 via-zinc-900 to-zinc-900 shadow-[0_0_50px_-15px_rgba(16,185,129,0.6)]'
-                        : 'border-zinc-800 bg-zinc-900 hover:border-zinc-600'
+                        : 'border-zinc-800 bg-black/80 backdrop-blur-sm hover:border-zinc-600'
                     }`}
                     style={{
                       animation: 'bbxFadeUp .45s ease both',
@@ -293,13 +293,13 @@ export default function PagamentosPage() {
               style={{ animation: 'bbxFadeUp .5s ease both', animationDelay: '300ms' }}
             >
               <span className="flex items-center gap-1.5">
-                <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" /> Zero KYC — sem CPF ou documentos
+                <ShieldCheck className="w-3.5 h-3.5 text-zinc-300" /> Zero KYC — sem CPF ou documentos
               </span>
               <span className="flex items-center gap-1.5">
-                <Zap className="w-3.5 h-3.5 text-emerald-500" /> Créditos vinculados à sua License Key
+                <Zap className="w-3.5 h-3.5 text-zinc-300" /> Créditos vinculados à sua License Key
               </span>
               <span className="flex items-center gap-1.5">
-                <Lock className="w-3.5 h-3.5 text-emerald-500" /> Modo simulado para testes
+                <Lock className="w-3.5 h-3.5 text-zinc-300" /> Modo simulado para testes
               </span>
             </div>
           </section>
@@ -327,7 +327,7 @@ export default function PagamentosPage() {
             <div className="grid gap-5 grid-cols-1 md:grid-cols-5">
               {/* Resumo do pedido */}
               <div
-                className="md:col-span-2 rounded-3xl border border-zinc-800 bg-zinc-900 p-5 sm:p-6 h-fit min-w-0"
+                className="md:col-span-2 rounded-3xl border-[0.5px] border-zinc-800 bg-black/80 backdrop-blur-sm p-5 sm:p-6 h-fit min-w-0"
                 style={{ animation: 'bbxFadeUp .45s ease both', animationDelay: '80ms' }}
               >
                 <p className="text-zinc-500 text-xs uppercase font-bold tracking-widest mb-4">
@@ -359,7 +359,7 @@ export default function PagamentosPage() {
                 </div>
 
                 {licenseKey && (
-                  <div className="mt-5 bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2.5">
+                  <div className="mt-5 bg-zinc-950 border-[0.5px] border-zinc-800 rounded-xl px-3 py-2.5">
                     <p className="text-[10px] uppercase tracking-widest text-zinc-600 mb-1">
                       Vinculado à License Key
                     </p>
@@ -371,18 +371,18 @@ export default function PagamentosPage() {
 
                 <div className="mt-4 space-y-2 text-xs text-zinc-500">
                   <p className="flex gap-2 items-start">
-                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-500 shrink-0 mt-0.5" />{' '}
+                    <ShieldCheck className="w-3.5 h-3.5 text-zinc-300 shrink-0 mt-0.5" />{' '}
                     Zero KYC — sem CPF, documentos ou dados pessoais
                   </p>
                   <p className="flex gap-2 items-start">
-                    <Lock className="w-3.5 h-3.5 text-emerald-500 shrink-0 mt-0.5" />{' '}
+                    <Lock className="w-3.5 h-3.5 text-zinc-300 shrink-0 mt-0.5" />{' '}
                     Modo simulado — nenhum valor real é cobrado
                   </p>
                 </div>
               </div>
               {/* Painel de pagamento */}
               <div
-                className="md:col-span-3 rounded-3xl border border-zinc-800 bg-zinc-900 p-5 sm:p-6 min-w-0"
+                className="md:col-span-3 rounded-3xl border-[0.5px] border-zinc-800 bg-black/80 backdrop-blur-sm p-5 sm:p-6 min-w-0"
                 style={{ animation: 'bbxFadeUp .45s ease both', animationDelay: '160ms' }}
               >
                 {/* Tabs de método */}
@@ -446,22 +446,22 @@ export default function PagamentosPage() {
                   style={{ animation: 'bbxFadeUp .35s ease both' }}
                   className="flex flex-col items-center text-center"
                 >
-                  <div className="relative bg-zinc-950 border border-zinc-800 rounded-2xl p-4">
+                  <div className="relative bg-zinc-950 border-[0.5px] border-zinc-800 rounded-2xl p-4">
                     {!qrFailed ? (
                       <img
                         src={qrUrl(
                           method === 'pix' ? pixPayload(plan.price) : WALLETS[method].address
                         )}
                         alt="QR Code simulado"
-                        className="w-48 h-48 sm:w-52 sm:h-52 max-w-full rounded-lg bg-zinc-900"
+                        className="w-48 h-48 sm:w-52 sm:h-52 max-w-full rounded-lg bg-black/80 backdrop-blur-sm"
                         onError={() => setQrFailed(true)}
                       />
                     ) : (
-                      <div className="w-48 h-48 sm:w-52 sm:h-52 max-w-full rounded-lg bg-zinc-900 flex items-center justify-center p-6 text-zinc-500 text-xs">
+                      <div className="w-48 h-48 sm:w-52 sm:h-52 max-w-full rounded-lg bg-black/80 backdrop-blur-sm flex items-center justify-center p-6 text-zinc-500 text-xs">
                         QR temporariamente indisponível — copie o código abaixo
                       </div>
                     )}
-                    <span className="absolute top-2 left-2 flex items-center gap-1 bg-zinc-900/90 border border-zinc-800 text-[9px] font-black tracking-widest text-zinc-400 px-2 py-1 rounded-md">
+                    <span className="absolute top-2 left-2 flex items-center gap-1 bg-black/85 backdrop-blur-sm border-[0.5px] border-zinc-800 text-[9px] font-black tracking-widest text-zinc-400 px-2 py-1 rounded-md">
                       <QrCode className="w-3 h-3" /> QR SIMULADO
                     </span>
                     {expired && (
@@ -478,7 +478,7 @@ export default function PagamentosPage() {
                       : `Envie o valor equivalente a R$ ${plan.price},00`}
                   </p>
 
-                  <div className="mt-3 w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3">
+                  <div className="mt-3 w-full bg-zinc-950 border-[0.5px] border-zinc-800 rounded-xl p-3">
                     <div className="flex items-center justify-between gap-3">
                       <div className="min-w-0 flex-1 text-left">
                         <p className="text-[10px] uppercase tracking-widest text-zinc-600 mb-1">
@@ -556,7 +556,7 @@ export default function PagamentosPage() {
             className="flex justify-center"
             style={{ animation: 'bbxFadeUp .4s ease both' }}
           >
-            <div className="w-full max-w-md text-center bg-zinc-900 border border-zinc-800 rounded-3xl p-6 sm:p-10 min-w-0 shadow-[0_0_60px_-20px_rgba(16,185,129,0.4)]">
+            <div className="w-full max-w-md text-center bg-black/80 backdrop-blur-sm border-[0.5px] border-zinc-800 rounded-3xl p-6 sm:p-10 min-w-0 shadow-[0_0_60px_-20px_rgba(16,185,129,0.4)]">
               <div
                 className="mx-auto w-20 h-20 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center mb-6"
                 style={{ animation: 'bbxPop .5s ease both' }}
@@ -574,7 +574,7 @@ export default function PagamentosPage() {
                 {plan.id === 'starter' ? 'Básico' : plan.id === 'growth' ? 'Pro' : 'Premium'}{' '}
                 — pagamento simulado concluído com sucesso.
               </p>
-              <div className="bg-zinc-950 border border-zinc-800 rounded-2xl px-4 py-5 mb-8">
+              <div className="bg-zinc-950 border-[0.5px] border-zinc-800 rounded-2xl px-4 py-5 mb-8">
                 <p className="text-zinc-500 text-xs uppercase tracking-widest mb-1">
                   Novo saldo
                 </p>

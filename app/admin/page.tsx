@@ -130,8 +130,8 @@ export default function AdminPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-zinc-950 text-zinc-100 flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
+      <div className="min-h-screen bg-black text-zinc-100 flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-zinc-300" />
         <p className="ml-3">Carregando Painel Admin...</p>
       </div>
     );
@@ -145,7 +145,7 @@ export default function AdminPage() {
   // }
 
   return (
-    <div className="min-h-screen w-full max-w-full overflow-x-clip bg-zinc-950 text-zinc-100 px-4 py-6 sm:p-6 md:p-12">
+    <div className="min-h-screen w-full max-w-full overflow-x-clip bg-black text-zinc-100 px-4 py-6 sm:p-6 md:p-12">
       <header className="w-full max-w-5xl mx-auto mb-10 flex flex-wrap justify-between items-center gap-4">
         <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tighter text-white break-words">
           Admin <span className="text-blue-500">Dashboard</span>
@@ -155,10 +155,10 @@ export default function AdminPage() {
 
       <main className="w-full max-w-6xl mx-auto space-y-8 min-w-0">
         {/* Gestão de Keys */}
-        <section className="bg-zinc-900 border border-zinc-800 p-4 sm:p-8 rounded-3xl shadow-xl min-w-0">
+        <section className="bg-black/80 backdrop-blur-sm border-[0.5px] border-zinc-800 p-4 sm:p-8 rounded-3xl shadow-xl min-w-0">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
             <div className="flex items-center gap-3">
-              <Key className="w-7 h-7 text-yellow-500" />
+              <Key className="w-7 h-7 text-zinc-300" />
               <div>
                 <h2 className="text-2xl font-bold text-white">Gestão de Keys</h2>
                 <p className="text-zinc-400 text-sm">Crie, ative/desative, edite e delete License Keys.</p>
@@ -183,7 +183,7 @@ export default function AdminPage() {
           {showCreateForm && (
             <form
               onSubmit={handleCreateLicense}
-              className="bg-zinc-950/60 border border-zinc-800 rounded-2xl p-6 mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+              className="bg-zinc-950/60 border-[0.5px] border-zinc-800 rounded-2xl p-6 mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
             >
               <div className="sm:col-span-2 lg:col-span-3">
                 <label className="block text-xs font-bold text-zinc-500 uppercase tracking-widest mb-1">License Key</label>
@@ -361,7 +361,7 @@ export default function AdminPage() {
                           <button
                             onClick={() => setEditingLicense({ ...lic })}
                             title="Editar"
-                            className="p-1.5 rounded-md bg-zinc-800 hover:bg-zinc-700 text-blue-400 transition-all"
+                            className="p-1.5 rounded-md bg-zinc-800 hover:bg-zinc-700 text-zinc-300 transition-all"
                           >
                             <Edit className="w-4 h-4" />
                           </button>
@@ -391,9 +391,9 @@ export default function AdminPage() {
         </section>
 
         {/* CMS de Conteúdo */}
-        <div className="bg-zinc-900 border border-zinc-800 p-6 sm:p-8 rounded-3xl shadow-xl min-w-0">
+        <div className="bg-black/80 backdrop-blur-sm border-[0.5px] border-zinc-800 p-6 sm:p-8 rounded-3xl shadow-xl min-w-0">
           <div className="flex items-center gap-3 mb-4">
-            <FileText className="w-7 h-7 text-green-500" />
+            <FileText className="w-7 h-7 text-zinc-300" />
             <h2 className="text-2xl font-bold text-white">CMS de Conteúdo</h2>
           </div>
           <p className="text-zinc-400 mb-6">Edite textos, gerencie aulas e links de ferramentas.</p>
@@ -403,9 +403,9 @@ export default function AdminPage() {
         </div>
 
         {/* Controle Global */}
-        <div className="bg-zinc-900 border border-zinc-800 p-6 sm:p-8 rounded-3xl shadow-xl lg:col-span-2 min-w-0">
+        <div className="bg-black/80 backdrop-blur-sm border-[0.5px] border-zinc-800 p-6 sm:p-8 rounded-3xl shadow-xl lg:col-span-2 min-w-0">
           <div className="flex items-center gap-3 mb-4">
-            <Settings className="w-7 h-7 text-purple-500" />
+            <Settings className="w-7 h-7 text-zinc-300" />
             <h2 className="text-2xl font-bold text-white">Controle Global</h2>
           </div>
           <p className="text-zinc-400 mb-6">Coloque o site em modo de manutenção e gerencie avisos.</p>

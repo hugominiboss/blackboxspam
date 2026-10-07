@@ -45,3 +45,6 @@ next-env.d.ts
 .env*
 # scratch
 .tmp-*.py
+
+# backups locais
+/backups/

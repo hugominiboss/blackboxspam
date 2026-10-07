@@ -32,7 +32,7 @@ const modulos = [
 
 export default function AcademiaPage() {
   return (
-    <div className="min-h-screen w-full max-w-full overflow-x-clip bg-zinc-950 text-zinc-100 px-4 py-6 sm:p-6 md:p-12">
+    <div className="min-h-screen w-full max-w-full overflow-x-clip bg-black text-zinc-100 px-4 py-6 sm:p-6 md:p-12">
       <div className="w-full max-w-5xl mx-auto min-w-0">
         <Link href="/" className="flex items-center gap-2 text-zinc-500 hover:text-white transition-colors text-sm mb-12 group">
           <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Voltar para a vitrine
@@ -40,7 +40,7 @@ export default function AcademiaPage() {
 
         <header className="mb-12 flex items-center justify-between gap-4 flex-wrap">
           <div className="flex flex-wrap items-center gap-4 min-w-0">
-            <div className="p-3 bg-blue-500/10 rounded-2xl text-blue-500 shrink-0">
+            <div className="p-3 bg-zinc-800/60 rounded-2xl text-zinc-300 shrink-0">
               <GraduationCap className="w-8 h-8" />
             </div>
             <div className="min-w-0">
@@ -56,7 +56,7 @@ export default function AcademiaPage() {
             <Link
               key={modulo.id}
               href={`/academia/modulo/${modulo.id}`}
-              className="group relative bg-zinc-900 border border-zinc-800 p-6 sm:p-8 rounded-3xl hover:border-zinc-700 transition-all duration-500 hover:-translate-y-2 overflow-hidden min-w-0"
+              className="group relative bg-black/80 backdrop-blur-sm border-[0.5px] border-zinc-800 p-6 sm:p-8 rounded-3xl hover:border-zinc-700 transition-all duration-500 hover:-translate-y-2 overflow-hidden min-w-0"
             >
               <div className={`absolute -right-10 -top-10 w-32 h-32 bg-gradient-to-br ${modulo.cor} opacity-10 blur-3xl group-hover:opacity-20 transition-opacity`} />
 

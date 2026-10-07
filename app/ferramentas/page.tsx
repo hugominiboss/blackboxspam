@@ -138,10 +138,10 @@ export default function FerramentasPage() {
     }
   }
 
-  if (loading) return <div className="h-screen bg-zinc-950 text-white flex items-center justify-center font-mono">CARREGANDO_FERRAMENTAS...</div>
+  if (loading) return <div className="h-screen bg-black text-white flex items-center justify-center font-mono">CARREGANDO_FERRAMENTAS...</div>
 
   return (
-    <div className="min-h-screen w-full max-w-full overflow-x-clip bg-zinc-950 text-zinc-100 px-4 py-6 sm:p-6 md:p-12">
+    <div className="min-h-screen w-full max-w-full overflow-x-clip bg-black text-zinc-100 px-4 py-6 sm:p-6 md:p-12">
       <div className="w-full max-w-4xl mx-auto min-w-0">
         <Link href="/" className="flex items-center gap-2 text-zinc-500 hover:text-white transition-colors text-sm mb-12 group">
           <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Voltar para a vitrine
@@ -149,7 +149,7 @@ export default function FerramentasPage() {
 
         <header className="mb-8 flex flex-wrap items-center justify-between gap-3">
           <div className="flex flex-wrap items-center gap-4 min-w-0">
-            <div className="p-3 bg-purple-500/10 rounded-2xl text-purple-500 shrink-0">
+            <div className="p-3 bg-zinc-800/60 rounded-2xl text-zinc-300 shrink-0">
               <Wrench className="w-8 h-8" />
             </div>
             <div className="min-w-0">
@@ -158,7 +158,7 @@ export default function FerramentasPage() {
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-2 shrink-0">
-            <span className="flex items-center gap-1.5 bg-zinc-900 border border-zinc-800 px-4 py-2 rounded-full">
+            <span className="flex items-center gap-1.5 bg-black/80 backdrop-blur-sm border-[0.5px] border-zinc-800 px-4 py-2 rounded-full">
               <CoinIcon size={16} />
               <span className="text-white font-mono font-bold text-sm whitespace-nowrap">{credits === null ? '—' : credits}</span>
             </span>
@@ -173,13 +173,13 @@ export default function FerramentasPage() {
         )}
 
         <div className="mb-6 flex items-center gap-2 text-xs text-zinc-500">
-          <ShieldCheck className="w-4 h-4 text-emerald-500" />
+          <ShieldCheck className="w-4 h-4 text-zinc-300" />
           Desbloqueio vinculado à sua License Key — ferramentas ativas não cobram de novo.
         </div>
 
         <div className="grid gap-3">
           {ferramentas.length === 0 ? (
-            <div className="bg-zinc-900 p-12 rounded-3xl text-center border border-zinc-800">
+            <div className="bg-black/80 backdrop-blur-sm p-12 rounded-3xl text-center border-[0.5px] border-zinc-800">
               <Lock className="w-12 h-12 text-zinc-700 mx-auto mb-4" />
               <p className="text-zinc-500">Nenhuma ferramenta disponível no momento.</p>
             </div>
@@ -190,7 +190,7 @@ export default function FerramentasPage() {
               return (
               <div
                 key={ferramenta.id}
-                className="group bg-zinc-900/50 border border-zinc-800 p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-between hover:bg-zinc-800/50 hover:border-zinc-700 transition-all min-w-0"
+                className="group bg-black/70 backdrop-blur-sm border-[0.5px] border-zinc-800 p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-between hover:bg-zinc-800/50 hover:border-zinc-700 transition-all min-w-0"
               >
                 <div className="flex items-center gap-4 min-w-0 flex-1">
                   <div className="w-10 h-10 shrink-0 rounded-full bg-zinc-800 flex items-center justify-center text-zinc-500 group-hover:bg-purple-500 group-hover:text-white transition-all">
@@ -209,7 +209,7 @@ export default function FerramentasPage() {
                   </div>
                 </div>
                 <div className="flex flex-wrap items-center gap-2 sm:gap-3 sm:shrink-0 sm:justify-end">
-                  <span className="flex items-center gap-1 text-xs font-mono text-purple-400 bg-purple-500/10 px-2 py-1 rounded-full whitespace-nowrap">
+                  <span className="flex items-center gap-1 text-xs font-mono text-zinc-300 bg-zinc-800/60 px-2 py-1 rounded-full whitespace-nowrap">
                     <Zap className="w-3 h-3" />
                     <CoinIcon size={13} /> {ferramenta.custo_creditos}
                   </span>
@@ -238,7 +238,7 @@ export default function FerramentasPage() {
                           : 'bg-zinc-800 text-white hover:bg-purple-600'
                       }`}
                     >
-                      <Zap className="w-3 h-3 text-yellow-400" />
+                      <Zap className="w-3 h-3 text-zinc-300" />
                       {pagandoId === ferramenta.id ? 'Processando...' : <><CoinIcon size={13} /> {ferramenta.custo_creditos} · Desbloquear</>}
                     </button>
                   )}

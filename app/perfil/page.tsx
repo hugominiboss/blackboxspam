@@ -60,7 +60,7 @@ export default function ProfilePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-zinc-950 text-zinc-100 flex items-center justify-center">
+      <div className="min-h-screen bg-black text-zinc-100 flex items-center justify-center">
         <p>Carregando perfil...</p>
       </div>
     );
@@ -68,7 +68,7 @@ export default function ProfilePage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-zinc-950 text-zinc-100 p-6 md:p-12 flex flex-col items-center">
+      <div className="min-h-screen bg-black text-zinc-100 p-6 md:p-12 flex flex-col items-center">
         <div className="max-w-md w-full">
           <Link href="/" className="flex items-center gap-2 text-zinc-500 hover:text-white transition-colors text-sm mb-12 group">
             <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Voltar para a vitrine
@@ -80,7 +80,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen w-full max-w-full overflow-x-clip bg-zinc-950 text-zinc-100 px-4 py-6 sm:p-6 md:p-12 flex flex-col items-center">
+    <div className="min-h-screen w-full max-w-full overflow-x-clip bg-black text-zinc-100 px-4 py-6 sm:p-6 md:p-12 flex flex-col items-center">
       <div className="w-full max-w-md min-w-0">
         <Link href="/" className="flex items-center gap-2 text-zinc-500 hover:text-white transition-colors text-sm mb-12 group">
           <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Voltar para a vitrine
@@ -91,10 +91,10 @@ export default function ProfilePage() {
           <LogoutButton variant="outline" />
         </div>
 
-        <div className="bg-zinc-900 border border-zinc-800 p-5 sm:p-8 rounded-3xl shadow-xl w-full min-w-0">
+        <div className="bg-black/80 backdrop-blur-sm border-[0.5px] border-zinc-800 p-5 sm:p-8 rounded-3xl shadow-xl w-full min-w-0">
           {/* License Info Card */}
           <div className="mb-6 pb-6 border-b border-zinc-800 flex flex-wrap items-center gap-4">
-            <div className="p-3 bg-blue-500/10 rounded-lg text-blue-500">
+            <div className="p-3 bg-zinc-800/60 rounded-lg text-zinc-300">
               <KeyRound className="w-6 h-6" />
             </div>
             <div className="flex-1 min-w-0">
@@ -110,7 +110,7 @@ export default function ProfilePage() {
               <div className="flex items-center gap-2 shrink-0">
                 <button
                   onClick={() => setRevealed((v) => !v)}
-                  className="text-xs text-zinc-400 hover:text-white border border-zinc-800 hover:border-zinc-600 rounded-lg px-3 py-1.5 transition-colors"
+                  className="text-xs text-zinc-400 hover:text-white border-[0.5px] border-zinc-800 hover:border-zinc-600 rounded-lg px-3 py-1.5 transition-colors"
                 >
                   {revealed ? 'Ocultar' : 'Revelar'}
                 </button>
@@ -128,7 +128,7 @@ export default function ProfilePage() {
           {/* Credits Card */}
           <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
             <div className="flex items-center gap-4 min-w-0">
-              <div className="p-3 bg-emerald-500/10 rounded-lg text-emerald-500">
+              <div className="p-3 bg-zinc-800/60 rounded-lg text-zinc-300">
                 <CreditCard className="w-6 h-6" />
               </div>
               <div>
