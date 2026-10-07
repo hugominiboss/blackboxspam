@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { getSupabaseAdmin } from '@/app/lib/license-guard';
+import { nivelParaGasto } from '@/app/lib/levels';
 
 /**
  * Retorna os dados (créditos, role, nível) da License Key autenticada
@@ -18,7 +19,7 @@ export async function GET() {
   const supabaseAdmin = getSupabaseAdmin();
   const { data, error } = await supabaseAdmin
     .from('licenses')
-    .select('key, role, status, credits, access_level')
+    .select('key, role, status, credits, access_level, total_spent, level')
     .eq('key', licenseKey)
     .single();
 
@@ -26,18 +27,25 @@ export async function GET() {
     return NextResponse.json({ message: 'License Key inválida ou inativa.' }, { status: 404 });
   }
 
+  // Nível é derivado do gasto acumulado — tolera banco ainda sem a migration.
+  const progresso = nivelParaGasto(data.total_spent ?? 0);
+
   return NextResponse.json({
     key: data.key,
     role: data.role,
     credits: data.credits,
     access_level: data.access_level,
+    total_spent: data.total_spent ?? 0,
+    level: data.level ?? progresso.atual,
+    levelProgress: progresso,
   });
 }
 
 /**
  * Debita créditos da License Key autenticada (ex.: 10 CR por aula).
  * Débito atômico: só atualiza se o saldo ainda for maior ou igual ao valor,
- * evitando corrida entre requisições simultâneas.
+ * evitando corrida entre requisições simultâneas. O gasto acumulado
+ * (`total_spent`) e o `level` sobem junto — base da progressão de Status.
  */
 export async function POST(req: NextRequest) {
   const cookieStore = await cookies();
@@ -64,7 +72,7 @@ export async function POST(req: NextRequest) {
   const supabaseAdmin = getSupabaseAdmin();
   const { data, error } = await supabaseAdmin
     .from('licenses')
-    .select('key, role, status, credits, access_level, expires_at')
+    .select('key, role, status, credits, access_level, expires_at, total_spent, level')
     .eq('key', licenseKey)
     .single();
 
@@ -83,12 +91,15 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  const gastoAcumulado = (data.total_spent ?? 0) + amount;
+  const progresso = nivelParaGasto(gastoAcumulado);
+
   const { data: atualizado, error: updError } = await supabaseAdmin
     .from('licenses')
-    .update({ credits: saldoAtual - amount })
+    .update({ credits: saldoAtual - amount, total_spent: gastoAcumulado, level: progresso.atual })
     .eq('key', licenseKey)
     .gte('credits', amount)
-    .select('credits')
+    .select('credits, total_spent, level')
     .single();
 
   if (updError || !atualizado) {
@@ -109,6 +120,9 @@ export async function POST(req: NextRequest) {
     role: data.role,
     credits: atualizado.credits,
     access_level: data.access_level,
+    total_spent: atualizado.total_spent ?? gastoAcumulado,
+    level: atualizado.level ?? progresso.atual,
+    levelProgress: nivelParaGasto(atualizado.total_spent ?? gastoAcumulado),
     spent: amount,
   });
 }

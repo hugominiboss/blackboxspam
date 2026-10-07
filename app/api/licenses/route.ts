@@ -11,7 +11,7 @@ export async function GET(req: Request) {
 
   const { data, error } = await supabaseAdmin
     .from('licenses')
-    .select('key, status, role, credits, access_level, expires_at, created_at, updated_at');
+    .select('key, status, role, credits, access_level, total_spent, level, expires_at, created_at, updated_at');
 
   if (error) {
     console.error('Error fetching licenses:', error);

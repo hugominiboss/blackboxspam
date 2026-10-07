@@ -10,6 +10,8 @@ interface License {
   role: 'user' | 'admin';
   credits: number;
   access_level: number;
+  total_spent: number | null;
+  level: string | null;
   expires_at: string | null;
   created_at: string;
   updated_at: string;
@@ -353,7 +355,14 @@ export default function AdminPage() {
                           <span className="text-zinc-400 text-xs font-bold bg-zinc-800 px-2 py-0.5 rounded-full">user</span>
                         )}
                       </td>
-                      <td className="py-3 pr-4 font-mono text-blue-400">{lic.credits} CR</td>
+                      <td className="py-3 pr-4 font-mono text-blue-400">
+                        {lic.credits} CR
+                        {(lic.level || lic.total_spent != null) && (
+                          <span className="block text-[11px] font-sans font-semibold text-zinc-400">
+                            {lic.level ?? 'Bronze'} · {(lic.total_spent ?? 0)} gastos
+                          </span>
+                        )}
+                      </td>
                       <td className="py-3 pr-4 font-mono text-zinc-300">Nv {lic.access_level}</td>
                       <td className="py-3 pr-4 text-zinc-400">{formatExpiresAt(lic.expires_at)}</td>
                       <td className="py-3 text-right whitespace-nowrap">

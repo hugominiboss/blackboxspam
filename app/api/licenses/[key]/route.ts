@@ -9,7 +9,7 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ key: s
   const supabaseAdmin = getSupabaseAdmin();
 
   const { key: licenseKeyToUpdate } = await params;
-  const { status, role, credits, access_level, expires_at } = await req.json();
+  const { status, role, credits, access_level, expires_at, total_spent, level } = await req.json();
 
   if (!licenseKeyToUpdate) {
     return NextResponse.json({ message: 'License Key para atualização é obrigatória.' }, { status: 400 });
@@ -21,6 +21,8 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ key: s
   if (credits !== undefined) updateData.credits = credits;
   if (access_level !== undefined) updateData.access_level = access_level;
   if (expires_at !== undefined) updateData.expires_at = expires_at;
+  if (total_spent !== undefined) updateData.total_spent = total_spent;
+  if (level !== undefined) updateData.level = level;
   
   if (Object.keys(updateData).length === 0) {
     return NextResponse.json({ message: 'Nenhum dado fornecido para atualização.' }, { status: 400 });

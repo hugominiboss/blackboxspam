@@ -4,6 +4,8 @@ import Link from 'next/link'
 import { CreditCard, KeyRound, Shield, ChevronLeft, Copy, Check, Wrench } from 'lucide-react'
 import LogoutButton from '@/app/components/logout-button'
 import CoinIcon from '@/app/components/coin-icon'
+import LevelCard from './_components/level-card'
+import type { ProgressoNivel } from '@/app/lib/levels'
 
 function maskKey(key: string): string {
   if (key.length <= 8) return '••••••••'
@@ -14,6 +16,7 @@ export default function ProfilePage() {
   const [licenseKey, setLicenseKey] = useState<string | null>(null);
   const [licenseRole, setLicenseRole] = useState<string | null>(null);
   const [userCredits, setUserCredits] = useState<number | null>(null);
+  const [levelProgress, setLevelProgress] = useState<ProgressoNivel | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [revealed, setRevealed] = useState(false);
@@ -36,6 +39,7 @@ export default function ProfilePage() {
         setLicenseKey(data.key);
         setLicenseRole(data.role);
         setUserCredits(data.credits ?? 0);
+        setLevelProgress(data.levelProgress ?? null);
       } catch (err: any) {
         console.error('Error fetching profile data:', err.message);
         setError(err.message);
@@ -92,6 +96,9 @@ export default function ProfilePage() {
         </div>
 
         <div className="bg-zinc-900 border border-zinc-800 p-5 sm:p-8 rounded-3xl shadow-xl w-full min-w-0">
+          {/* Card de Status (nível por créditos gastos) */}
+          <LevelCard progresso={levelProgress} />
+
           {/* License Info Card */}
           <div className="mb-6 pb-6 border-b border-zinc-800 flex flex-wrap items-center gap-4">
             <div className="p-3 bg-zinc-800/60 rounded-lg text-zinc-300">
