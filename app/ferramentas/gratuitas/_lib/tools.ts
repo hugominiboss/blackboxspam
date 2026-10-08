@@ -11,8 +11,12 @@ import {
 export type FerramentaOpcao = {
   key: string
   label: string
-  defaultValue: number
+  /** Tipo do campo: número (padrão) ou texto/select customizado. */
+  tipo?: 'numero' | 'texto' | 'separador'
+  defaultValue: number | string
   min?: number
+  placeholder?: string
+  ajuda?: string
 }
 
 /** Chaves de processador — o `ToolRunner` (client) resolve a função real. */
@@ -57,7 +61,7 @@ const ICONES: Record<FerramentaIconKey, LucideIcon> = {
 const PROCESSADORES: Record<FerramentaProcessadorKey, (input: string, opcoes: Opcoes) => string> = {
   'extrair-emails': (input) => extrairEmails(input),
   'limpar-emails': (input) => limparEmails(input),
-  'filtrar-colunas': (input) => filtrarColunas(input),
+  'filtrar-colunas': (input, opcoes) => filtrarColunas(input, opcoes),
   'filtrar-palavras': (input) => filtrarPalavras(input),
   'filtrar-senhas': (input, opcoes) => filtrarSenhas(input, opcoes),
 }
@@ -85,10 +89,15 @@ const CATALOGO: FerramentaMeta[] = [
   {
     slug: 'filtrar-colunas',
     nome: 'Columns Filter',
-    desc: 'Remove linhas vazias e espaços sobrando dentro de cada coluna.',
+    desc: 'Extrai colunas por posição (ex.: 1,3) com separador auto-detectado: vírgula, ponto-e-vírgula, barra, dois-pontos, pipe ou tab.',
     icon: 'columns',
-    placeholder: 'Cole os dados aqui (CSV, TSV ou texto com colunas)…',
-    buttonLabel: 'Filtrar Colunas',
+    placeholder: "Cole os dados aqui (CSV, dump SQL, lista com , ; / : | ou tab)…\nEx.: (33, 'Maria Silva', 'maria@hotmail.com', NULL, '2020-11-05 18:23:12')",
+    buttonLabel: 'Extrair Colunas',
+    opcoes: [
+      { key: 'colunas', label: 'Colunas', tipo: 'texto', defaultValue: '1,3', placeholder: 'Ex.: 1,3 ou 1-3 (vazio = só limpar)', ajuda: 'Posições 1-based. Ex.: 1,3 extrai a 1ª e a 3ª coluna.' },
+      { key: 'separador', label: 'Separador', tipo: 'separador', defaultValue: 'auto', ajuda: 'Auto detecta por linha: tab ; , | : /.' },
+      { key: 'separadorSaida', label: 'Saída', tipo: 'texto', defaultValue: ', ', placeholder: ', ', ajuda: 'Junção das colunas extraídas.' },
+    ],
     processador: 'filtrar-colunas',
   },
   {

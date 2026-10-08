@@ -49,6 +49,16 @@ const PROCESSADORES: Record<
 
 const fmt = (n: number) => n.toLocaleString('pt-BR')
 
+const OPCOES_SEPARADOR = [
+  { valor: 'auto', rotulo: 'Auto' },
+  { valor: '\t', rotulo: 'Tab' },
+  { valor: ';', rotulo: ';' },
+  { valor: ',', rotulo: ',' },
+  { valor: '|', rotulo: '|' },
+  { valor: ':', rotulo: ':' },
+  { valor: '/', rotulo: '/' },
+] as const
+
 type Stats = { entrada: number; saida: number; ms: number }
 
 /**
@@ -249,25 +259,59 @@ export default function ToolRunner({ ferramenta }: { ferramenta: FerramentaMeta 
           />
 
           {ferramenta.opcoes && (
-            <div className="mt-2 grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <div className="mt-2 grid grid-cols-1 sm:grid-cols-3 gap-2">
               {ferramenta.opcoes.map((opcao) => (
                 <label
                   key={opcao.key}
-                  className="flex items-center gap-2 text-xs text-zinc-400 min-w-0"
+                  title={opcao.ajuda}
+                  className="flex flex-col gap-1 text-xs text-zinc-400 min-w-0 bg-zinc-800/60 border border-zinc-800 rounded-lg p-2"
                 >
-                  <span className="shrink-0">{opcao.label}</span>
-                  <input
-                    type="number"
-                    min={opcao.min ?? 0}
-                    value={opcoes[opcao.key] ?? 0}
-                    onChange={(e) =>
-                      setOpcoes((atual) => ({
-                        ...atual,
-                        [opcao.key]: e.target.value === '' ? 0 : Number(e.target.value),
-                      }))
-                    }
-                    className="w-full min-w-0 p-2 bg-zinc-800 border border-zinc-700 rounded-lg text-sm text-white"
-                  />
+                  <span className="font-bold uppercase tracking-widest text-[10px] text-zinc-500">
+                    {opcao.label}
+                  </span>
+                  {opcao.tipo === 'separador' ? (
+                    <select
+                      value={String(opcoes[opcao.key] ?? opcao.defaultValue)}
+                      onChange={(e) =>
+                        setOpcoes((atual) => ({ ...atual, [opcao.key]: e.target.value }))
+                      }
+                      className="w-full min-w-0 p-2 bg-zinc-800 border border-zinc-700 rounded-lg text-sm text-white"
+                    >
+                      {OPCOES_SEPARADOR.map((s) => (
+                        <option key={s.valor} value={s.valor}>
+                          {s.rotulo}
+                        </option>
+                      ))}
+                    </select>
+                  ) : opcao.tipo === 'texto' ? (
+                    <input
+                      type="text"
+                      placeholder={opcao.placeholder}
+                      value={String(opcoes[opcao.key] ?? '')}
+                      onChange={(e) =>
+                        setOpcoes((atual) => ({ ...atual, [opcao.key]: e.target.value }))
+                      }
+                      className="w-full min-w-0 p-2 bg-zinc-800 border border-zinc-700 rounded-lg text-sm text-white font-mono placeholder:text-zinc-600"
+                    />
+                  ) : (
+                    <span className="flex items-center gap-2 min-w-0">
+                      <input
+                        type="number"
+                        min={opcao.min ?? 0}
+                        value={Number(opcoes[opcao.key] ?? 0)}
+                        onChange={(e) =>
+                          setOpcoes((atual) => ({
+                            ...atual,
+                            [opcao.key]: e.target.value === '' ? 0 : Number(e.target.value),
+                          }))
+                        }
+                        className="w-full min-w-0 p-2 bg-zinc-800 border border-zinc-700 rounded-lg text-sm text-white"
+                      />
+                    </span>
+                  )}
+                  {opcao.ajuda && (
+                    <span className="text-[11px] text-zinc-500 leading-snug">{opcao.ajuda}</span>
+                  )}
                 </label>
               ))}
             </div>
