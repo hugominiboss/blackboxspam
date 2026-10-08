@@ -42,7 +42,7 @@ const PROCESSADORES: Record<
 > = {
   'extrair-emails': (input) => extrairEmails(input),
   'limpar-emails': (input) => limparEmails(input),
-  'filtrar-colunas': (input) => filtrarColunas(input),
+  'filtrar-colunas': (input, opcoes) => filtrarColunas(input, opcoes),
   'filtrar-palavras': (input) => filtrarPalavras(input),
   'filtrar-senhas': (input, opcoes) => filtrarSenhas(input, opcoes),
 }
