@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { Wrench, ChevronLeft, Download, Lock, Zap, Mail, MessageSquare, ShieldCheck, Globe, Users, Smartphone } from 'lucide-react'
 import LogoutButton from '@/app/components/logout-button'
 import CoinIcon from '@/app/components/coin-icon'
+import ProxyScraperPanel from './_components/proxy-scraper-panel'
 
 interface Ferramenta {
   id: string; nome: string; descricao: string; custo_creditos: number; link_download: string;
@@ -175,6 +176,11 @@ export default function FerramentasPage() {
         <div className="mb-6 flex items-center gap-2 text-xs text-zinc-500">
           <ShieldCheck className="w-4 h-4 text-zinc-300" />
           Desbloqueio vinculado à sua License Key — ferramentas ativas não cobram de novo.
+        </div>
+
+        {/* Proxy Scraper PRO — licença validade + dispositivo (compra com créditos) */}
+        <div className="mb-8">
+          <ProxyScraperPanel />
         </div>
 
         <div className="grid gap-3">
