@@ -88,7 +88,8 @@ Itens com código iniciado, porém **não finalizados** ou **parcialmente funcio
 - **CMS de Conteúdo (Admin):** o card existe em `app/admin/page.tsx` (linhas ~403-412), mas o botão "Editar Conteúdo" é um `Link href="#"` **sem destino** — não há tela de CMS implementada.
 - **Controle Global / Modo Manutenção (Admin):** botão "Modo Manutenção" presente (`app/admin/page.tsx`, ~414-425) **sem nenhuma ação** (`onClick` ausente) e sem backend/flag de manutenção.
 - **Tabela `ferramentas` (banco):** existe no schema, mas está **com 0 registros** em produção. A home de Ferramentas (`app/ferramentas/page.tsx`) compensa exibindo uma lista `SIMULADAS` fixa no código quando o banco está vazio — o desbloqueio real de ferramentas pagas depende do vínculo License Key↔ferramenta que **não existe** como tabela própria (usa apenas `localStorage` no cliente).
-- **Desbloqueio de Ferramentas/Aulas é client-side:** tanto `app/academia/modulo/[id]/page.tsx` quanto `app/ferramentas/page.tsx` persistem "desbloqueado" em `localStorage` do navegador. Não há registro servidor do que foi desbloqueado (o débito de créditos ocorre, mas o "direito de acesso" não é persistido por usuário).
+- **Migração unlocks → servidor (EM ANDAMENTO — Onda 2):** a tabela `unlocks` **já foi criada e aplicada em produção** (migration `20261014000000_create_unlocks_table.sql`), com `id` uuid PK, `license_key` (FK → `licenses(key)` ON DELETE CASCADE), `content_id`, `content_type` (CHECK `aula`/`ferramenta`), `unlocked_at`, **UNIQUE (license_key, content_id)** e RLS (leitura pública só p/ key válida; escrita só service_role). **Falta migrar o código cliente:** hoje `app/academia/modulo/[id]/page.tsx` e `app/ferramentas/page.tsx` ainda persistem "desbloqueado" em `localStorage` — o próximo passo é trocar por leitura/gravação via API servidor usando `unlocks`.
+- **Desbloqueio ainda é client-side (a ser eliminado):** enquanto a migração acima não conclui, o "direito de acesso" a aulas/ferramentas vive apenas no `localStorage` do navegador (o débito de créditos ocorre, mas não há vínculo servidor por usuário).
 - **Provedores de login social (Supabase Auth):** `supabase/config.toml` traz dezenas de provedores (Apple, Google, GitHub, Firebase, Auth0, etc.) **todos `enabled = false`** — o app hoje usa somente License Key.
 - **App Python do Proxy Scraper** vive **fora do repo** (`C:\Users\PcPower\Desktop\scripts\Proxy`) e **não está versionado** no Git deste projeto.
 
@@ -100,21 +101,20 @@ Itens com código iniciado, porém **não finalizados** ou **parcialmente funcio
 1. **Versionar remoto:** o repo é **só local** — não há remote Git configurado e o projeto Vercel **não está ligado a repositório** (deploy é manual via CLI). Sem backup remoto do código.
 2. **Sincronizar migrations↔produção:** descobriu-se que a migration de níveis (`20261007200000`) **não estava aplicada** e causou falha no login. Auditar e aplicar **todas** as migrations pendentes; considerar adotar `supabase db push` no fluxo.
 3. **Gateway de pagamento real:** o checkout (`app/perfil/pagamentos/page.tsx`) e o topup (`app/api/credits/topup/route.ts`) são **simulados** — sem cobrança real.
-4. **Persistir desbloqueios no servidor:** substituir o controle por `localStorage` (Ferramentas/Aulas) por uma relação servidor (ex.: tabela `unlocks`/`entitlements` atrelada à License Key).
 
 ### 🟡 Prioridade Média
-5. **Popular `ferramentas` e remover dados simulados:** cadastrar as ferramentas reais no banco e eliminar a lista `SIMULADAS` fixa em `app/ferramentas/page.tsx`.
-6. **Implementar o CMS de Conteúdo** (Admin) e o **Modo Manutenção** (hoje placeholders em `app/admin/page.tsx`).
-7. **Histórico de consumo:** exibir no Perfil o extrato de débitos (aulas/ferramentas/licenças) por License Key.
-8. **Documentação do próprio produto:** `README.md` ainda é o texto padrão do `create-next-app` (não descreve o BlackBox). `docs/PROJETO.md` é a fonte de arquitetura.
-9. **Testes automatizados:** não há nenhuma suíte de testes no projeto.
+4. **Popular `ferramentas` e remover dados simulados:** cadastrar as ferramentas reais no banco e eliminar a lista `SIMULADAS` fixa em `app/ferramentas/page.tsx`.
+5. **Implementar o CMS de Conteúdo** (Admin) e o **Modo Manutenção** (hoje placeholders em `app/admin/page.tsx`).
+6. **Histórico de consumo:** exibir no Perfil o extrato de débitos (aulas/ferramentas/licenças) por License Key.
+7. **Documentação do próprio produto:** `README.md` ainda é o texto padrão do `create-next-app` (não descreve o BlackBox). `docs/PROJETO.md` é a fonte de arquitetura.
+8. **Testes automatizados:** não há nenhuma suíte de testes no projeto.
 
 ### 🟢 Prioridade Baixa
-10. **Domínio próprio:** produção usa o domínio padrão Vercel (`blackboxspam-web.vercel.app`).
-11. **Deployment Protection:** `ssoProtection = all_except_custom_domains` está ativo — revisar se deseja manter/exigir auth da Vercel nas páginas.
-12. **Rate limiting persistente:** o limite do `/validate` é em memória (por instância serverless) — insuficiente sob escala; considerar Upstash/Redis.
-13. **Limpeza de schema:** tabelas legadas podem existir (`licencas`, `user_credits`) — revisar consolidação.
-14. **Ofuscação do app Python:** a licença client-side é patchável; avaliar medidas extras se necessário.
+9. **Domínio próprio:** produção usa o domínio padrão Vercel (`blackboxspam-web.vercel.app`).
+10. **Deployment Protection:** `ssoProtection = all_except_custom_domains` está ativo — revisar se deseja manter/exigir auth da Vercel nas páginas.
+11. **Rate limiting persistente:** o limite do `/validate` é em memória (por instância serverless) — insuficiente sob escala; considerar Upstash/Redis.
+12. **Limpeza de schema:** tabelas legadas podem existir (`licencas`, `user_credits`) — revisar consolidação.
+13. **Ofuscação do app Python:** a licença client-side é patchável; avaliar medidas extras se necessário.
 
 ---
 
@@ -122,17 +122,18 @@ Itens com código iniciado, porém **não finalizados** ou **parcialmente funcio
 
 **Commit HEAD:** `5d8c2e9` — *"feat(tools): licenca por validade do Proxy Scraper com consumo de creditos e vinculo por dispositivo"* (8 arquivos, +844 linhas), que entregou todo o subsistema **Proxy Scraper PRO**: tabela `product_licenses`, 4 rotas de API (`validate`, `purchase`, `reset-device`, `list`), lib `product-licenses.ts` e o painel em `/ferramentas`.
 
-**Ações em produção realizadas após esse commit (não commitadas — feitas via Management API, pois o deploy é por CLI):**
+**Ações em produção/banco realizadas após esse commit (via Management API, pois o deploy é por CLI):**
 1. **Migration `product_licenses` aplicada** e validada (11 colunas, constraint de plano 7d/15d/30d, RLS).
 2. **Bug de login corrigido:** identificado que a migration `20261007200000_add_level_progression.sql` **não estava aplicada** no banco — a rota `GET /api/credits` quebrava ao selecionar as colunas `total_spent`/`level` inexistentes, o que fazia o botão **"Entrar"** reaparecer na home mesmo com sessão ativa. A migration foi aplicada em produção e o `/api/credits` voltou a responder `200`.
 3. **Créditos adicionados:** `BBX-USER-0001` creditado com **+10.000** (saldo atual **10.240**).
+4. **Onda 2 — tabela `unlocks` criada e aplicada em produção** (migration `20261014000000_create_unlocks_table.sql`): `id` uuid PK, `license_key` (FK → `licenses(key)` ON DELETE CASCADE), `content_id`, `content_type` (CHECK `aula`/`ferramenta`), `unlocked_at`, **UNIQUE (license_key, content_id)** e RLS. Validada com 8 testes reais (INSERT, unique, check, FK, limpeza) — todos OK. **Próximo subpasso:** migrar o código cliente (`academia/modulo/[id]`, `ferramentas/page`) de `localStorage` para a API servidor usando `unlocks`.
 
-**Estado de saúde (verificado via API do Supabase, 13/10/2026):**
-- Schema `public` contém: `aulas` (8), `ferramentas` (0), `licencas`, `licenses` (2), `mentorias`, `perfis`, `product_licenses` (1), `user_credits`.
+**Estado de saúde (verificado via API do Supabase, 14/10/2026):**
+- Schema `public` contém: `aulas` (8), `ferramentas` (0), `licencas`, `licenses` (2), `mentorias`, `perfis`, `product_licenses` (1), `unlocks` (0), `user_credits`.
 - `licenses` com as chaves: `BBX-MASTER-0001` (admin, 9999 CR) e `BBX-USER-0001` (user, 10240 CR).
 - `ssoProtection = all_except_custom_domains` ativo no projeto Vercel; **as rotas `/api/*` são públicas** (o `matcher` do middleware exclui `/api`).
 
-**Próximo passo natural (sugerido):** auditar/aplicar migrations pendentes no banco e decidir entre (a) criar remote Git + integrar o Vercel ao repositório para deploy automatizado, ou (b) manter deploy manual via CLI.
+**Próximo passo natural (sugerido):** concluir a Onda 2 (API + UI servidor de unlocks) e, na Onda 1, criar remote Git + integrar o Vercel ao repositório para deploy automatizado (ou manter deploy manual via CLI).
 
 
 
