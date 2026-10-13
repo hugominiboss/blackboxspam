@@ -90,10 +90,11 @@ export default function ModuloPage({ params }: { params: Promise<{ id: string }>
     // Abre a aba antes da requisição para não ser bloqueado pelo popup blocker
     const win = window.open('', '_blank')
     try {
-      const res = await fetch('/api/credits', {
+      // Compra atômica: débito + desbloqueio numa única operação servidor.
+      const res = await fetch('/api/credits/purchase', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount: CUSTO_AULA }),
+        body: JSON.stringify({ content_id: aula.id, content_type: 'aula' }),
       })
       const data = await res.json().catch(() => ({}))
 
@@ -115,14 +116,6 @@ export default function ModuloPage({ params }: { params: Promise<{ id: string }>
       }
 
       setCredits(data.credits)
-      // Débito confirmado: registra o desbloqueio no servidor (tabela unlocks).
-      try {
-        await fetch('/api/unlocks', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ content_id: aula.id, content_type: 'aula' }),
-        })
-      } catch (e) { console.error('Falha ao registrar unlock:', e) }
       setDesbloqueadas([...desbloqueadas, aula.id])
 
       if (win) win.location.href = aula.link_video

@@ -108,10 +108,11 @@ export default function FerramentasPage() {
 
     setPagandoId(ferramenta.id)
     try {
-      const res = await fetch('/api/credits', {
+      // Compra atômica: débito + desbloqueio numa única operação servidor.
+      const res = await fetch('/api/credits/purchase', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount: ferramenta.custo_creditos }),
+        body: JSON.stringify({ content_id: ferramenta.id, content_type: 'ferramenta', amount: ferramenta.custo_creditos }),
       })
       const data = await res.json().catch(() => ({}))
 
@@ -130,14 +131,6 @@ export default function FerramentasPage() {
       }
 
       setCredits(data.credits ?? 0)
-      // Débito confirmado: registra o desbloqueio no servidor (tabela unlocks).
-      try {
-        await fetch('/api/unlocks', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ content_id: ferramenta.id, content_type: 'ferramenta' }),
-        })
-      } catch (e) { console.error('Falha ao registrar unlock:', e) }
       setDesbloqueadas([...desbloqueadas, ferramenta.id])
 
       if (ferramenta.link_download && ferramenta.link_download !== '#') {
