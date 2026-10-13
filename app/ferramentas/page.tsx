@@ -31,8 +31,6 @@ const iconFor = (id: string) => {
   return Wrench
 }
 
-const STORAGE_KEY = 'bbx_ferramentas_desbloqueadas'
-
 export default function FerramentasPage() {
   const [ferramentas, setFerramentas] = useState<Ferramenta[]>([])
   const [loading, setLoading] = useState(true)
@@ -72,14 +70,21 @@ export default function FerramentasPage() {
       } catch (e) { console.error(e) }
     }
 
-    // Ferramentas já desbloqueadas neste navegador (não pagam de novo)
-    try {
-      const salvas = localStorage.getItem(STORAGE_KEY)
-      if (salvas) setDesbloqueadas(JSON.parse(salvas))
-    } catch {}
+    // Ferramentas já desbloqueadas no SERVIDOR (tabela unlocks) — persistem
+    // entre dispositivos e navegadores, sem depender de localStorage.
+    async function fetchUnlocks() {
+      try {
+        const res = await fetch('/api/unlocks')
+        if (res.ok) {
+          const d = await res.json()
+          setDesbloqueadas(d.content_ids ?? [])
+        }
+      } catch (e) { console.error(e) }
+    }
 
     fetchFerramentas()
     fetchCredits()
+    fetchUnlocks()
   }, [])
 
   async function desbloquear(ferramenta: Ferramenta) {
@@ -125,9 +130,15 @@ export default function FerramentasPage() {
       }
 
       setCredits(data.credits ?? 0)
-      const novas = [...desbloqueadas, ferramenta.id]
-      setDesbloqueadas(novas)
-      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(novas)) } catch {}
+      // Débito confirmado: registra o desbloqueio no servidor (tabela unlocks).
+      try {
+        await fetch('/api/unlocks', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ content_id: ferramenta.id, content_type: 'ferramenta' }),
+        })
+      } catch (e) { console.error('Falha ao registrar unlock:', e) }
+      setDesbloqueadas([...desbloqueadas, ferramenta.id])
 
       if (ferramenta.link_download && ferramenta.link_download !== '#') {
         window.open(ferramenta.link_download, '_blank')

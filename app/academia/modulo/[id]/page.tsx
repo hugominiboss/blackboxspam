@@ -12,7 +12,6 @@ interface Aula {
 
 // Valor experimental: cada episódio custa 10 créditos para desbloquear
 const CUSTO_AULA = 10
-const STORAGE_KEY = 'bbx_aulas_desbloqueadas'
 
 export default function ModuloPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params);
@@ -55,14 +54,21 @@ export default function ModuloPage({ params }: { params: Promise<{ id: string }>
       } catch (e) { console.error(e) }
     }
 
-    // Aulas já desbloqueadas neste navegador (não pagam de novo)
-    try {
-      const salvas = localStorage.getItem(STORAGE_KEY)
-      if (salvas) setDesbloqueadas(JSON.parse(salvas))
-    } catch {}
+    // Aulas já desbloqueadas no SERVIDOR (tabela unlocks) — persistem entre
+    // dispositivos e navegadores, sem depender de localStorage.
+    async function fetchUnlocks() {
+      try {
+        const res = await fetch('/api/unlocks')
+        if (res.ok) {
+          const d = await res.json()
+          setDesbloqueadas(d.content_ids ?? [])
+        }
+      } catch (e) { console.error(e) }
+    }
 
     fetchAulas()
     fetchCredits()
+    fetchUnlocks()
   }, [id])
 
   async function desbloquear(aula: Aula) {
@@ -109,9 +115,15 @@ export default function ModuloPage({ params }: { params: Promise<{ id: string }>
       }
 
       setCredits(data.credits)
-      const nova = [...desbloqueadas, aula.id]
-      setDesbloqueadas(nova)
-      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(nova)) } catch {}
+      // Débito confirmado: registra o desbloqueio no servidor (tabela unlocks).
+      try {
+        await fetch('/api/unlocks', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ content_id: aula.id, content_type: 'aula' }),
+        })
+      } catch (e) { console.error('Falha ao registrar unlock:', e) }
+      setDesbloqueadas([...desbloqueadas, aula.id])
 
       if (win) win.location.href = aula.link_video
       else window.open(aula.link_video, '_blank')
