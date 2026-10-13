@@ -1,6 +1,9 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+﻿# ============================================================================
+# BlackBox Vault - .gitignore (blindagem)
+# Objetivo: NUNCA versionar segredos, dependencias ou builds.
+# ============================================================================
 
-# dependencies
+# --- Dependencias ---
 /node_modules
 /.pnp
 .pnp.*
@@ -10,41 +13,45 @@
 !.yarn/releases
 !.yarn/versions
 
-# testing
-/coverage
-
-# next.js
+# --- Build / cache do Next.js ---
 /.next/
 /out/
-
-# production
 /build
+*.tsbuildinfo
+next-env.d.ts
 
-# misc
-.DS_Store
-*.pem
+# --- SEGREDOS: env files (NUNCA comitar) ---
+.env
+.env.*
+!.env.example
+*.local
 
-# debug
+# --- Vercel ---
+.vercel
+
+# --- Testes / cobertura ---
+/coverage
+
+# --- Logs ---
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 dev.log
 
-# env files (can opt-in for committing if needed)
-.env*
+# --- Sistema / editores ---
+.DS_Store
+Thumbs.db
+*.pem
+.idea/
+.vscode/
 
-# vercel
-.vercel
+# --- Config local de agentes ---
+.claude/
 
-# typescript
-*.tsbuildinfo
-next-env.d.ts
-
-.vercel
-.env*
-# scratch
-.tmp-*.py
-
-# backups locais
+# --- Backups locais ---
 /backups/
+
+# --- Scripts temporarios de manutencao ---
+_*.ps1
+.tmp-*.py
