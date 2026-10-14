@@ -185,12 +185,10 @@ export default function FerramentasPage() {
         Desbloqueio vinculado à sua License Key — ferramentas ativas não cobram de novo.
       </div>
 
-      {/* Proxy Scraper PRO — licença validade + dispositivo (compra com créditos) */}
-      <div className="mb-8">
-        <ProxyScraperPanel />
-      </div>
-
+      {/* Proxy Scraper PRO — agora é só mais uma linha da lista (expansível),
+          com licença por validade + vínculo de dispositivo (compra com créditos). */}
         <div className="grid gap-2 sm:gap-3">
+          <ProxyScraperPanel />
           {ferramentas.length === 0 ? (
             <div className="panel p-12 text-center">
               <Lock className="mx-auto mb-4 h-12 w-12 text-faint" />
