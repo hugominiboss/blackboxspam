@@ -38,7 +38,29 @@ export default function AcademiaPage() {
         icon={<GraduationCap className="h-5 w-5" />}
       />
 
-      <main className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {/* Mobile: lista compacta (1 linha por módulo). Desktop: cards grandes. */}
+      <nav className="grid gap-2 sm:hidden">
+        {modulos.map((modulo) => (
+          <Link
+            key={modulo.id}
+            href={`/academia/modulo/${modulo.id}`}
+            className="panel group flex items-center gap-3 px-3.5 py-3 transition-all active:border-accent/40"
+          >
+            <div className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-accent/30 bg-accent/10 text-accent">
+              <modulo.icon className="h-4 w-4" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <h2 className="text-[15px] font-semibold leading-tight text-ink">
+                {modulo.nome}
+              </h2>
+              <p className="truncate text-xs text-muted">{modulo.desc}</p>
+            </div>
+            <ArrowRight className="h-4 w-4 shrink-0 text-faint transition-all group-active:translate-x-0.5 group-active:text-accent" />
+          </Link>
+        ))}
+      </nav>
+
+      <main className="hidden gap-4 sm:grid sm:grid-cols-2 lg:grid-cols-3">
         {modulos.map((modulo) => (
           <Link
             key={modulo.id}

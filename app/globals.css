@@ -236,3 +236,17 @@
     scroll-behavior: auto !important;
   }
 }
+
+/* ── Compactação mobile (<640px): botões/chips menores, sem afetar o desktop ── */
+@media (max-width: 639px) {
+  .btn {
+    padding: 0.45rem 0.7rem;
+    font-size: 13px;
+    line-height: 1.25;
+    gap: 0.4rem;
+  }
+  .chip {
+    padding: 0.2rem 0.45rem;
+    font-size: 11px;
+  }
+}
