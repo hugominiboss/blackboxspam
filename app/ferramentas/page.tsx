@@ -190,7 +190,7 @@ export default function FerramentasPage() {
         <ProxyScraperPanel />
       </div>
 
-        <div className="grid gap-3">
+        <div className="grid gap-2 sm:gap-3">
           {ferramentas.length === 0 ? (
             <div className="panel p-12 text-center">
               <Lock className="mx-auto mb-4 h-12 w-12 text-faint" />
@@ -203,10 +203,10 @@ export default function FerramentasPage() {
               return (
               <div
                 key={ferramenta.id}
-                className="panel group flex flex-col gap-3 p-4 transition-all hover:border-accent/40 sm:flex-row sm:items-center sm:justify-between"
+                className="panel group flex flex-col gap-3 p-3 transition-all hover:border-accent/40 sm:flex-row sm:items-center sm:justify-between sm:p-4"
               >
-                <div className="flex min-w-0 flex-1 items-center gap-4">
-                  <div className="grid h-10 w-10 shrink-0 place-items-center rounded-lg border border-line bg-raised/60 text-muted transition-colors group-hover:border-accent/40 group-hover:text-accent">
+                <div className="flex min-w-0 flex-1 items-center gap-3 sm:gap-4">
+                  <div className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-line bg-raised/60 text-muted transition-colors group-hover:border-accent/40 group-hover:text-accent sm:h-10 sm:w-10">
                     <Icon className="h-4 w-4" />
                   </div>
                   <div className="min-w-0">
@@ -217,7 +217,7 @@ export default function FerramentasPage() {
                     <p className="line-clamp-1 text-xs text-muted">{ferramenta.descricao}</p>
                   </div>
                 </div>
-                <div className="flex flex-wrap items-center gap-2 sm:shrink-0 sm:justify-end">
+                <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto sm:shrink-0 sm:justify-end">
                   {ativa ? (
                     ferramenta.link_download && ferramenta.link_download !== '#' ? (
                       <a
@@ -237,7 +237,7 @@ export default function FerramentasPage() {
                     <button
                       onClick={() => desbloquear(ferramenta)}
                       disabled={pagandoId === ferramenta.id}
-                      className={`btn shrink-0 disabled:cursor-wait disabled:opacity-60 ${
+                      className={`btn w-full justify-center sm:w-auto shrink-0 disabled:cursor-wait disabled:opacity-60 ${
                         credits !== null && credits < ferramenta.custo_creditos
                           ? 'border-danger/40 bg-danger/10 text-danger'
                           : 'btn-primary'
