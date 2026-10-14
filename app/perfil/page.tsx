@@ -1,10 +1,12 @@
 'use client'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { CreditCard, KeyRound, Shield, ChevronLeft, Copy, Check, Wrench } from 'lucide-react'
+import { CreditCard, KeyRound, Shield, Copy, Check, Wrench } from 'lucide-react'
 import LogoutButton from '@/app/components/logout-button'
 import CoinIcon from '@/app/components/coin-icon'
 import LevelCard from './_components/level-card'
+import { AppShell } from '@/app/components/app-shell'
+import { PageHeader, StatusPill, Panel } from '@/app/components/qc-ui'
 import type { ProgressoNivel } from '@/app/lib/levels'
 
 function maskKey(key: string): string {
@@ -64,99 +66,105 @@ export default function ProfilePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-black text-zinc-100 flex items-center justify-center">
-        <p>Carregando perfil...</p>
-      </div>
+      <AppShell>
+        <div className="flex items-center justify-center gap-3 py-24 font-mono text-sm text-muted">
+          <KeyRound className="h-4 w-4 animate-pulse text-accent" />
+          carregando_perfil<span className="animate-blink">_</span>
+        </div>
+      </AppShell>
     );
   }
 
   if (error) {
     return (
-      <div className="min-h-screen bg-black text-zinc-100 p-6 md:p-12 flex flex-col items-center">
-        <div className="max-w-md w-full">
-          <Link href="/" className="flex items-center gap-2 text-zinc-500 hover:text-white transition-colors text-sm mb-12 group">
-            <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Voltar para a vitrine
-          </Link>
-          <p className="text-red-500">Erro: {error}</p>
+      <AppShell>
+        <PageHeader eyebrow="Conta" title="Meu Perfil" />
+        <div className="flex items-start gap-2 rounded-lg border border-danger/40 bg-danger/10 px-3 py-2 font-mono text-xs text-danger">
+          <span className="mt-0.5 shrink-0">!</span>
+          <span className="break-all">Erro: {error}</span>
         </div>
-      </div>
+      </AppShell>
     );
   }
 
   return (
-    <div className="min-h-screen w-full max-w-full overflow-x-clip bg-black text-zinc-100 px-4 py-6 sm:p-6 md:p-12 flex flex-col items-center">
-      <div className="w-full max-w-md min-w-0">
-        <Link href="/" className="flex items-center gap-2 text-zinc-500 hover:text-white transition-colors text-sm mb-12 group">
-          <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Voltar para a vitrine
-        </Link>
+    <AppShell>
+      <PageHeader
+        eyebrow="Conta"
+        title="Meu Perfil"
+        subtitle="Gestão de créditos, licenças e sessão da sua License Key."
+        icon={<Shield className="h-5 w-5" />}
+        actions={<StatusPill label={licenseRole ?? 'user'} tone="accent" />}
+      />
 
-        <div className="flex flex-wrap items-center justify-between gap-3 mb-8">
-          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tighter text-white break-words">Meu Perfil</h1>
-          <LogoutButton variant="outline" />
-        </div>
-
-        <div className="bg-zinc-900 border border-zinc-800 p-5 sm:p-8 rounded-3xl shadow-xl w-full min-w-0">
+      <div className="grid gap-4 lg:grid-cols-2">
+        <Panel className="p-5">
           {/* Card de Status (nível por créditos gastos) */}
           <LevelCard progresso={levelProgress} />
 
-          {/* License Info Card */}
-          <div className="mb-6 pb-6 border-b border-zinc-800 flex flex-wrap items-center gap-4">
-            <div className="p-3 bg-zinc-800/60 rounded-lg text-zinc-300">
-              <KeyRound className="w-6 h-6" />
+          {/* License Info */}
+          <div className="mb-6 flex flex-wrap items-center gap-4 border-b border-line pb-6">
+            <div className="grid h-11 w-11 shrink-0 place-items-center rounded-lg border border-accent/30 bg-accent/10 text-accent">
+              <KeyRound className="h-5 w-5" />
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-zinc-500 text-xs uppercase font-bold tracking-widest">License Key</p>
-              <p className="text-lg font-mono font-bold text-white truncate">{licenseKey ? (revealed ? licenseKey : maskKey(licenseKey)) : 'N/A'}</p>
+            <div className="min-w-0 flex-1">
+              <p className="label mb-0">License Key</p>
+              <p className="truncate font-mono text-lg font-bold text-ink">
+                {licenseKey ? (revealed ? licenseKey : maskKey(licenseKey)) : 'N/A'}
+              </p>
               {licenseRole && (
-                <p className="text-zinc-500 text-xs uppercase tracking-widest mt-1 flex items-center gap-1">
-                  <Shield className="w-3 h-3" /> {licenseRole}
+                <p className="mt-1 flex items-center gap-1 font-mono text-[11px] uppercase tracking-widest text-muted">
+                  <Shield className="h-3 w-3" /> {licenseRole}
                 </p>
               )}
             </div>
             {licenseKey && (
-              <div className="flex items-center gap-2 shrink-0">
+              <div className="flex shrink-0 items-center gap-2">
                 <button
                   onClick={() => setRevealed((v) => !v)}
-                  className="text-xs text-zinc-400 hover:text-white border border-zinc-800 hover:border-zinc-600 rounded-lg px-3 py-1.5 transition-colors"
+                  className="btn btn-ghost"
                 >
                   {revealed ? 'Ocultar' : 'Revelar'}
                 </button>
                 <button
                   onClick={copyKey}
                   title="Copiar License Key"
-                  className="p-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white transition-colors"
+                  className="btn btn-ghost !px-2.5"
                 >
-                  {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+                  {copied ? <Check className="h-4 w-4 text-good" /> : <Copy className="h-4 w-4" />}
                 </button>
               </div>
             )}
           </div>
 
-          {/* Credits Card */}
-          <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
-            <div className="flex items-center gap-4 min-w-0">
-              <div className="p-3 bg-zinc-800/60 rounded-lg text-zinc-300">
-                <CreditCard className="w-6 h-6" />
+          {/* Créditos */}
+          <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <div className="grid h-11 w-11 shrink-0 place-items-center rounded-lg border border-accent/30 bg-accent/10 text-accent">
+                <CreditCard className="h-5 w-5" />
               </div>
               <div>
-                <p className="text-zinc-500 text-xs uppercase font-bold tracking-widest">Seu Saldo</p>
-                <p className="text-3xl font-mono font-bold text-white flex items-center gap-2"><CoinIcon size={30} />{userCredits}</p>
+                <p className="label mb-0">Seu Saldo</p>
+                <p className="flex items-center gap-2 font-mono text-3xl font-bold text-ink">
+                  <CoinIcon size={26} />
+                  {userCredits}
+                </p>
               </div>
             </div>
-            <Link href="/perfil/pagamentos" className="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-lg transition-all text-sm font-semibold inline-block">
+            <Link href="/perfil/pagamentos" className="btn btn-primary">
               + Adicionar Créditos
             </Link>
           </div>
 
           {/* Atalhos */}
-          <div className="grid grid-cols-2 gap-3">
-            <Link href="/ferramentas" className="inline-flex items-center justify-center gap-2 bg-zinc-800 hover:bg-zinc-700 text-white font-semibold py-3 rounded-xl transition-colors text-sm">
-              <Wrench className="w-4 h-4" /> Ferramentas
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <Link href="/ferramentas" className="btn btn-ghost">
+              <Wrench className="h-4 w-4" /> Ferramentas
             </Link>
             <LogoutButton variant="outline" label="Encerrar sessão" />
           </div>
-        </div>
+        </Panel>
       </div>
-    </div>
+    </AppShell>
   );
 }

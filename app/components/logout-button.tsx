@@ -4,13 +4,13 @@ import { useRouter } from 'next/navigation'
 import { LogOut } from 'lucide-react'
 
 type Props = {
-  variant?: 'header' | 'outline' | 'danger'
+  variant?: 'header' | 'outline' | 'danger' | 'sidebar'
   label?: string
 }
 
 /**
  * Botão Sair reutilizável: limpa os cookies httpOnly de licença
- * via API e redireciona para /login.
+ * via API e redireciona para /login. Estilo "Dark Terminal".
  */
 export default function LogoutButton({ variant = 'header', label = 'Sair' }: Props) {
   const router = useRouter()
@@ -18,10 +18,12 @@ export default function LogoutButton({ variant = 'header', label = 'Sair' }: Pro
 
   const styles =
     variant === 'danger'
-      ? 'bg-red-600 hover:bg-red-500 text-white font-bold py-2 px-4 rounded-lg flex items-center gap-2 transition-all disabled:opacity-50'
-      : variant === 'outline'
-        ? 'inline-flex items-center gap-2 text-sm text-zinc-400 hover:text-white border border-zinc-800 hover:border-zinc-600 rounded-lg px-3 py-2 transition-colors disabled:opacity-50'
-        : 'inline-flex items-center gap-2 text-xs font-semibold text-zinc-500 hover:text-white bg-zinc-900 border border-zinc-800 hover:border-zinc-700 px-3 py-2 rounded-lg transition-colors disabled:opacity-50'
+      ? 'inline-flex items-center gap-2 btn btn-danger font-bold'
+      : variant === 'sidebar'
+        ? 'inline-flex w-full items-center gap-2 rounded-lg border border-line bg-transparent px-3 py-2 text-sm font-medium text-muted transition-colors hover:border-danger/40 hover:text-danger disabled:opacity-50'
+        : variant === 'outline'
+          ? 'inline-flex items-center gap-2 rounded-lg border border-line px-3 py-2 text-sm text-muted transition-colors hover:border-accent/40 hover:text-ink disabled:opacity-50'
+          : 'inline-flex items-center gap-2 rounded-lg border border-line bg-raised/70 px-3 py-2 text-xs font-semibold text-muted transition-colors hover:border-danger/40 hover:text-danger disabled:opacity-50'
 
   const handleLogout = async () => {
     if (leaving) return

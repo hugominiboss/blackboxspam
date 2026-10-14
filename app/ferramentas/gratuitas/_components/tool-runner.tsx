@@ -1,10 +1,8 @@
 'use client'
 import { useRef, useState } from 'react'
-import Link from 'next/link'
 import {
   CaseSensitive,
   Check,
-  ChevronLeft,
   ClipboardCopy,
   Columns3,
   Download,
@@ -16,6 +14,9 @@ import {
   type LucideIcon,
 } from 'lucide-react'
 import LogoutButton from '@/app/components/logout-button'
+import { AppShell } from '@/app/components/app-shell'
+import { PageHeader, Panel } from '@/app/components/qc-ui'
+import { LogConsole, useLogConsole } from '@/app/components/log-console'
 import {
   LIMITE_SUGERIDO,
   contarLinhas,
@@ -85,17 +86,22 @@ export default function ToolRunner({ ferramenta }: { ferramenta: FerramentaMeta 
   const [copiado, setCopiado] = useState(false)
   const [nomeArquivo, setNomeArquivo] = useState<string | null>(null)
 
+  // Console de logs estilo terminal (apenas exibição — não altera a lógica).
+  const { lines, log } = useLogConsole()
+
   async function processar() {
     const entrada = inputRef.current?.value ?? ''
     if (!entrada.trim()) {
       if (outputRef.current) outputRef.current.value = ''
       setStats(null)
       setAviso('Cole a lista ou carregue um arquivo para processar.')
+      log('warn', 'entrada vazia — nada a processar')
       return
     }
 
     setAviso(null)
     setProcessando(true)
+    log('cmd', `executando ${ferramenta.processador}…`)
     // Deixa a UI pintar o estado "Processando..." antes do trabalho pesado.
     await new Promise((resolver) => setTimeout(resolver, 16))
 
@@ -116,11 +122,16 @@ export default function ToolRunner({ ferramenta }: { ferramenta: FerramentaMeta 
             LIMITE_SUGERIDO,
           )} linhas. O processamento pode ficar mais lento.`,
         )
+        log('warn', `${fmt(linhasEntrada)} linhas — acima do limite sugerido`)
       } else if (linhasSaida === 0) {
         setAviso('Nenhum resultado encontrado para os filtros aplicados.')
+        log('warn', 'nenhum resultado para os filtros aplicados')
+      } else {
+        log('success', `${fmt(linhasEntrada)} → ${fmt(linhasSaida)} linhas em ${Math.round(ms)} ms`)
       }
     } catch (erro) {
       setAviso(`Erro ao processar: ${erro instanceof Error ? erro.message : 'falha inesperada'}`)
+      log('error', `falha ao processar: ${erro instanceof Error ? erro.message : 'erro inesperado'}`)
     } finally {
       setProcessando(false)
     }
@@ -139,8 +150,12 @@ export default function ToolRunner({ ferramenta }: { ferramenta: FerramentaMeta 
       setStats(null)
       setAviso(null)
       setNomeArquivo(arquivo.name)
+      log('info', `arquivo carregado: ${arquivo.name}`)
     }
-    leitor.onerror = () => setAviso('Não foi possível ler o arquivo escolhido.')
+    leitor.onerror = () => {
+      setAviso('Não foi possível ler o arquivo escolhido.')
+      log('error', 'falha ao ler o arquivo')
+    }
     leitor.readAsText(arquivo)
   }
 
@@ -159,6 +174,7 @@ export default function ToolRunner({ ferramenta }: { ferramenta: FerramentaMeta 
       window.getSelection()?.removeAllRanges()
     }
     setCopiado(true)
+    log('success', 'resultado copiado para a área de transferência')
     setTimeout(() => setCopiado(false), 1500)
   }
 
@@ -174,6 +190,7 @@ export default function ToolRunner({ ferramenta }: { ferramenta: FerramentaMeta 
     a.href = url
     a.download = `${ferramenta.slug}-resultado.txt`
     a.click()
+    log('success', `download iniciado: ${ferramenta.slug}-resultado.txt`)
     setTimeout(() => URL.revokeObjectURL(url), 1000)
   }
 
@@ -184,60 +201,44 @@ export default function ToolRunner({ ferramenta }: { ferramenta: FerramentaMeta 
     setAviso(null)
     setNomeArquivo(null)
     setCopiado(false)
+    log('info', 'área de trabalho limpa')
   }
 
   return (
-    <div className="min-h-screen w-full max-w-full overflow-x-clip bg-black text-zinc-100 px-4 py-6 sm:p-6 md:p-12">
-      <div className="w-full max-w-5xl mx-auto min-w-0">
-        <Link
-          href="/ferramentas/gratuitas"
-          className="flex items-center gap-2 text-zinc-500 hover:text-white transition-colors text-sm mb-8 group w-fit"
-        >
-          <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Todas as
-          ferramentas gratuitas
-        </Link>
+    <AppShell>
+      <PageHeader
+        eyebrow="Ferramenta gratuita"
+        title={ferramenta.nome}
+        subtitle={ferramenta.desc}
+        icon={<Icone className="h-5 w-5" />}
+        actions={<LogoutButton />}
+      />
 
-        <header className="mb-6 flex flex-wrap items-center justify-between gap-3">
-          <div className="flex flex-wrap items-center gap-4 min-w-0">
-            <div className="p-3 bg-zinc-800/60 rounded-2xl text-zinc-300 shrink-0">
-              <Icone className="w-7 h-7" />
-            </div>
-            <div className="min-w-0">
-              <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight break-words">
-                {ferramenta.nome}
-              </h1>
-              <p className="text-zinc-400 text-sm mt-1">{ferramenta.desc}</p>
-            </div>
-          </div>
-          <LogoutButton />
-        </header>
+      <div className="mb-4 flex flex-wrap items-center gap-2 font-mono text-xs text-faint">
+        <span className="chip">
+          Suporta até <span className="font-semibold text-accent">100.000 linhas</span> por
+          processamento
+        </span>
+        <span className="chip">Gratuito — não consome créditos</span>
+      </div>
 
-        <div className="mb-4 flex flex-wrap items-center gap-2 text-xs text-zinc-500">
-          <span className="bg-zinc-900 border border-zinc-800 px-3 py-1.5 rounded-full">
-            Suporta até <span className="text-amber-400 font-semibold">100.000 linhas</span> por
-            processamento
-          </span>
-          <span className="bg-zinc-900 border border-zinc-800 px-3 py-1.5 rounded-full">
-            Gratuito — não consome créditos
-          </span>
+      {aviso && (
+        <div className="mb-4 flex items-start gap-2 rounded-lg border border-warn/40 bg-warn/10 px-3 py-2 font-mono text-xs text-warn">
+          <span className="mt-0.5 shrink-0">!</span>
+          <span className="break-words">{aviso}</span>
         </div>
+      )}
 
-        {aviso && (
-          <div className="mb-4 bg-amber-500/10 border border-amber-500/30 text-amber-300 text-sm px-4 py-3 rounded-xl break-words">
-            {aviso}
-          </div>
-        )}
-
-        <div className="bg-zinc-900 p-4 rounded-xl border border-zinc-800 flex flex-col min-w-0">
-          <div className="flex items-center justify-between gap-3 mb-2 flex-wrap">
+        <Panel className="mb-4 flex flex-col p-4">
+          <div className="mb-2 flex flex-wrap items-center justify-between gap-3">
             <label
               htmlFor="ferramenta-entrada"
-              className="text-xs font-bold uppercase tracking-widest text-zinc-400"
+              className="label mb-0"
             >
               Entrada
             </label>
-            <label className="flex items-center gap-2 text-xs text-zinc-400 cursor-pointer hover:text-white transition-colors">
-              <Upload className="w-4 h-4" />
+            <label className="flex cursor-pointer items-center gap-2 text-xs text-muted transition-colors hover:text-ink">
+              <Upload className="h-4 w-4" />
               {nomeArquivo ? nomeArquivo : 'Carregar arquivo (.txt, .csv)'}
               <input
                 type="file"
@@ -255,18 +256,18 @@ export default function ToolRunner({ ferramenta }: { ferramenta: FerramentaMeta 
             spellCheck={false}
             autoCorrect="off"
             autoCapitalize="off"
-            className="w-full p-3 bg-zinc-800 border border-zinc-700 rounded-lg text-sm text-white placeholder:text-zinc-500 min-h-[220px] resize-y font-mono"
+            className="textarea-io min-h-[220px]"
           />
 
           {ferramenta.opcoes && (
-            <div className="mt-2 grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-3">
               {ferramenta.opcoes.map((opcao) => (
                 <label
                   key={opcao.key}
                   title={opcao.ajuda}
-                  className="flex flex-col gap-1 text-xs text-zinc-400 min-w-0 bg-zinc-800/60 border border-zinc-800 rounded-lg p-2"
+                  className="flex min-w-0 flex-col gap-1 rounded-lg border border-line bg-raised/60 p-2 text-xs text-muted"
                 >
-                  <span className="font-bold uppercase tracking-widest text-[10px] text-zinc-500">
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-faint">
                     {opcao.label}
                   </span>
                   {opcao.tipo === 'separador' ? (
@@ -275,7 +276,7 @@ export default function ToolRunner({ ferramenta }: { ferramenta: FerramentaMeta 
                       onChange={(e) =>
                         setOpcoes((atual) => ({ ...atual, [opcao.key]: e.target.value }))
                       }
-                      className="w-full min-w-0 p-2 bg-zinc-800 border border-zinc-700 rounded-lg text-sm text-white"
+                      className="w-full min-w-0 rounded-lg border border-line bg-raised p-2 text-sm text-ink"
                     >
                       {OPCOES_SEPARADOR.map((s) => (
                         <option key={s.valor} value={s.valor}>
@@ -291,10 +292,10 @@ export default function ToolRunner({ ferramenta }: { ferramenta: FerramentaMeta 
                       onChange={(e) =>
                         setOpcoes((atual) => ({ ...atual, [opcao.key]: e.target.value }))
                       }
-                      className="w-full min-w-0 p-2 bg-zinc-800 border border-zinc-700 rounded-lg text-sm text-white font-mono placeholder:text-zinc-600"
+                      className="w-full min-w-0 rounded-lg border border-line bg-raised p-2 font-mono text-sm text-ink placeholder:text-faint"
                     />
                   ) : (
-                    <span className="flex items-center gap-2 min-w-0">
+                    <span className="flex min-w-0 items-center gap-2">
                       <input
                         type="number"
                         min={opcao.min ?? 0}
@@ -305,12 +306,12 @@ export default function ToolRunner({ ferramenta }: { ferramenta: FerramentaMeta 
                             [opcao.key]: e.target.value === '' ? 0 : Number(e.target.value),
                           }))
                         }
-                        className="w-full min-w-0 p-2 bg-zinc-800 border border-zinc-700 rounded-lg text-sm text-white"
+                        className="w-full min-w-0 rounded-lg border border-line bg-raised p-2 text-sm text-ink"
                       />
                     </span>
                   )}
                   {opcao.ajuda && (
-                    <span className="text-[11px] text-zinc-500 leading-snug">{opcao.ajuda}</span>
+                    <span className="text-[11px] leading-snug text-faint">{opcao.ajuda}</span>
                   )}
                 </label>
               ))}
@@ -321,51 +322,40 @@ export default function ToolRunner({ ferramenta }: { ferramenta: FerramentaMeta 
             <button
               onClick={processar}
               disabled={processando}
-              className="flex items-center gap-2 px-5 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm font-semibold text-white transition-colors disabled:opacity-60 disabled:cursor-wait"
+              className="btn btn-primary disabled:cursor-wait disabled:opacity-60"
             >
-              <Play className="w-4 h-4" />
+              <Play className="h-4 w-4" />
               {processando ? 'Processando…' : ferramenta.buttonLabel}
             </button>
-            <button
-              onClick={copiar}
-              className="flex items-center gap-2 px-4 py-2 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded-lg text-sm font-semibold text-zinc-200 transition-colors"
-            >
+            <button onClick={copiar} className="btn">
               {copiado ? (
-                <Check className="w-4 h-4 text-emerald-400" />
+                <Check className="h-4 w-4 text-good" />
               ) : (
-                <ClipboardCopy className="w-4 h-4" />
+                <ClipboardCopy className="h-4 w-4" />
               )}
               {copiado ? 'Copiado!' : 'Copiar'}
             </button>
-            <button
-              onClick={baixar}
-              className="flex items-center gap-2 px-4 py-2 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded-lg text-sm font-semibold text-zinc-200 transition-colors"
-            >
-              <Download className="w-4 h-4" />
+            <button onClick={baixar} className="btn">
+              <Download className="h-4 w-4" />
               Baixar .txt
             </button>
-            <button
-              onClick={limpar}
-              className="flex items-center gap-2 px-4 py-2 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded-lg text-sm font-semibold text-zinc-200 transition-colors ml-auto"
-            >
-              <Eraser className="w-4 h-4" />
+            <button onClick={limpar} className="btn ml-auto">
+              <Eraser className="h-4 w-4" />
               Limpar
             </button>
           </div>
 
           <div className="mt-3 flex flex-wrap items-center gap-2 text-xs">
-            <span className="text-zinc-500 uppercase tracking-widest font-bold">Resultado</span>
+            <span className="label mb-0">Resultado</span>
             {stats && (
               <>
-                <span className="bg-zinc-800 border border-zinc-700 px-2 py-1 rounded-full text-zinc-300 font-mono">
-                  entrada: {fmt(stats.entrada)} linhas
+                <span className="font-mono text-faint">
+                  entrada: <span className="text-muted">{fmt(stats.entrada)} linhas</span>
                 </span>
-                <span className="bg-zinc-800 border border-zinc-700 px-2 py-1 rounded-full text-emerald-300 font-mono">
-                  saída: {fmt(stats.saida)} linhas
+                <span className="font-mono text-faint">
+                  saída: <span className="text-good">{fmt(stats.saida)} linhas</span>
                 </span>
-                <span className="bg-zinc-800 border border-zinc-700 px-2 py-1 rounded-full text-zinc-400 font-mono">
-                  {fmt(stats.ms)} ms
-                </span>
+                <span className="font-mono text-faint">{fmt(stats.ms)} ms</span>
               </>
             )}
           </div>
@@ -375,11 +365,19 @@ export default function ToolRunner({ ferramenta }: { ferramenta: FerramentaMeta 
             readOnly
             placeholder="O resultado aparece aqui"
             spellCheck={false}
-            className="w-full mt-2 p-3 bg-zinc-800 border border-zinc-700 rounded-lg text-sm text-emerald-200 placeholder:text-zinc-500 min-h-[220px] resize-y font-mono"
+            className="textarea-io mt-2 min-h-[220px] text-good"
+          />
+        </Panel>
+
+        {/* Console de logs estilo terminal — mostra cada etapa do processamento. */}
+        <div className="mt-4">
+          <LogConsole
+            lines={lines}
+            emptyHint="Execute uma ferramenta para ver os logs do processamento."
+            title="console.log — BlackBoxSpam"
           />
         </div>
-      </div>
-    </div>
+    </AppShell>
   )
 }
 

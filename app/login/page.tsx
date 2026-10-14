@@ -2,6 +2,8 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { KeyRound, ShieldCheck } from 'lucide-react'
+import { Reactor } from '@/app/components/reactor'
 
 export default function LoginPage() {
   const [licenseKey, setLicenseKey] = useState('');
@@ -40,40 +42,59 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen w-full max-w-full overflow-x-clip bg-black text-zinc-100 flex items-center justify-center px-4 py-6 sm:p-6">
-      <div className="bg-zinc-900 border border-zinc-800 p-6 sm:p-8 rounded-3xl shadow-xl max-w-md w-full min-w-0">
-        <h1 className="text-3xl font-bold tracking-tighter text-white mb-6 text-center">
-          Acessar <span className="text-white">BlackBox</span> <span className="text-[#FF6A00]">Vault</span>
-        </h1>
+    <div className="relative flex min-h-screen w-full items-center justify-center overflow-x-clip px-4 py-6">
+      <div className="panel w-full max-w-md p-6 sm:p-8">
+        <div className="mb-6 flex flex-col items-center gap-3 text-center">
+          <Reactor size={44} active />
+          <div>
+            <h1 className="font-display text-2xl font-bold tracking-tight text-ink">
+              Acessar <span className="text-ink">BlackBox</span> <span className="text-accent">Vault</span>
+            </h1>
+            <p className="mt-1 font-mono text-[11px] uppercase tracking-[0.22em] text-muted">
+              autenticação por license key
+            </p>
+          </div>
+        </div>
+
         <form onSubmit={handleSignIn} className="space-y-4">
           <div>
-            <label htmlFor="licenseKey" className="block text-sm font-medium text-zinc-400 mb-2">
+            <label htmlFor="licenseKey" className="label">
               License Key
             </label>
-            <input
-              type="text"
-              id="licenseKey"
-              className="w-full p-3 rounded-lg bg-zinc-800 border border-zinc-700 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Insira sua License Key"
-              value={licenseKey}
-              onChange={(e) => setLicenseKey(e.target.value)}
-              required
-            />
+            <div className="relative">
+              <KeyRound className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-faint" />
+              <input
+                type="text"
+                id="licenseKey"
+                className="input pl-9"
+                placeholder="••••-••••-••••"
+                value={licenseKey}
+                onChange={(e) => setLicenseKey(e.target.value)}
+                required
+              />
+            </div>
           </div>
+
           {error && (
-            <p className="text-red-500 text-sm text-center">{error}</p>
+            <div className="flex items-start gap-2 rounded-lg border border-danger/40 bg-danger/10 px-3 py-2 font-mono text-xs text-danger">
+              <span className="mt-0.5 shrink-0">!</span>
+              <span className="break-all">{error}</span>
+            </div>
           )}
+
           <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-4 rounded-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+            className="btn btn-primary w-full"
             disabled={loading}
           >
+            <ShieldCheck className="h-4 w-4" />
             {loading ? 'Verificando...' : 'Acessar'}
           </button>
         </form>
-        <p className="text-zinc-500 text-sm text-center mt-6">
+
+        <p className="mt-6 text-center text-sm text-muted">
           Não possui uma Key? {' '}
-          <Link href="https://t.me/seulinktelegram" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+          <Link href="https://t.me/seulinktelegram" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">
             Solicite acesso via Telegram
           </Link>
         </p>

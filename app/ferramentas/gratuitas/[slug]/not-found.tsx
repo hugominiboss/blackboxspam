@@ -1,27 +1,26 @@
 'use client'
 import Link from 'next/link'
 import { ChevronLeft, Wrench } from 'lucide-react'
+import { AppShell } from '@/app/components/app-shell'
+import { Panel } from '@/app/components/qc-ui'
 
 export default function FerramentaNaoEncontrada() {
   return (
-    <div className="min-h-screen w-full max-w-full overflow-x-clip bg-black text-zinc-100 px-4 py-6 sm:p-6 md:p-12">
-      <div className="w-full max-w-xl mx-auto min-w-0 text-center py-16">
-        <div className="p-4 bg-zinc-900 border border-zinc-800 rounded-2xl inline-flex mb-6">
-          <Wrench className="w-10 h-10 text-zinc-500" />
+    <AppShell>
+      <Panel className="mx-auto w-full max-w-xl min-w-0 px-6 py-14 text-center">
+        <div className="mb-6 inline-flex rounded-xl border border-line bg-raised/60 p-4">
+          <Wrench className="h-8 w-8 text-faint" />
         </div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-white mb-2">
+        <h1 className="mb-2 font-display text-2xl font-bold text-ink sm:text-3xl">
           Ferramenta não encontrada
         </h1>
-        <p className="text-zinc-400 text-sm mb-8">
+        <p className="mb-8 text-sm text-muted">
           O endereço acessado não corresponde a nenhuma ferramenta gratuita.
         </p>
-        <Link
-          href="/ferramentas/gratuitas"
-          className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-5 py-3 rounded-lg transition-colors"
-        >
-          <ChevronLeft className="w-4 h-4" /> Ver todas as ferramentas gratuitas
+        <Link href="/ferramentas/gratuitas" className="btn btn-primary">
+          <ChevronLeft className="h-4 w-4" /> Ver todas as ferramentas gratuitas
         </Link>
-      </div>
-    </div>
+      </Panel>
+    </AppShell>
   )
 }

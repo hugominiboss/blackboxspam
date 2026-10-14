@@ -1,59 +1,238 @@
 @import "tailwindcss";
 
+/* ══════════════════════════════════════════════════════════════════════
+   BlackBox Vault — UI "Dark Terminal"
+   Clone de UX/UI do QuadCore Web SQLi Injecter (análise do repositório
+   original quadcoreside/QuadCore-Web-SQLi-Injecter-DB-Dumper).
+   Fundo quase preto · superfícies cinza-azuladas · acento verde-neon
+   #35E4C6 · tipografia mono de alta densidade.
+   A lógica de negócio (API/Banco) NÃO é afetada por este arquivo.
+   ══════════════════════════════════════════════════════════════════════ */
+
+@theme {
+  /* ── Superfícies ── */
+  --color-bg: #06090f;
+  --color-surface: #0b111a;
+  --color-raised: #101a26;
+  --color-line: #1b2735;
+
+  /* ── Tipografia ── */
+  --color-ink: #e7eef6;
+  --color-muted: #7e93ab;
+  --color-faint: #47586c;
+
+  /* ── Acento verde-neon ── */
+  --color-accent: #35e4c6;
+  --color-accent-dim: #1ca890;
+  --color-accent-deep: #0e3a34;
+
+  /* ── Estados ── */
+  --color-warn: #f6b23c;
+  --color-danger: #ff4e6a;
+  --color-good: #46e39b;
+
+  /* ── Remapeamento zinc/black → paleta terminal (classes legadas) ── */
+  --color-black: #06090f;
+  --color-zinc-950: #06090f;
+  --color-zinc-900: #0b111a;
+  --color-zinc-800: #101a26;
+  --color-zinc-700: #1b2735;
+  --color-zinc-600: #24344a;
+  --color-zinc-500: #47586c;
+  --color-zinc-400: #7e93ab;
+  --color-zinc-300: #a7bccf;
+  --color-zinc-200: #c7d6e6;
+  --color-zinc-100: #e7eef6;
+
+  /* ── Remapeamento de acentos decorativos → verde-neon / estados ── */
+  --color-blue-400: #35e4c6;
+  --color-blue-500: #35e4c6;
+  --color-blue-600: #1ca890;
+  --color-blue-700: #0e3a34;
+  --color-purple-400: #35e4c6;
+  --color-purple-500: #35e4c6;
+  --color-purple-600: #1ca890;
+  --color-pink-500: #35e4c6;
+  --color-cyan-500: #35e4c6;
+  --color-teal-500: #35e4c6;
+  --color-emerald-200: #a9f5e7;
+  --color-emerald-300: #6df0d8;
+  --color-emerald-400: #46e39b;
+  --color-emerald-500: #35e4c6;
+  --color-emerald-600: #1ca890;
+  --color-amber-400: #f6b23c;
+  --color-amber-500: #f6b23c;
+  --color-yellow-400: #f6b23c;
+  --color-yellow-500: #f6b23c;
+  --color-red-400: #ff4e6a;
+  --color-red-500: #ff4e6a;
+  --color-red-600: #e63950;
+  --color-red-700: #b81f38;
+
+  /* ── Fontes ── */
+  --font-display: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-ibm-plex-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-ibm-plex-mono), ui-monospace, SFMono-Regular, monospace;
+
+  /* ── Sombras ── */
+  --shadow-glow: 0 0 0 1px rgba(53, 228, 198, 0.25), 0 0 24px -6px rgba(53, 228, 198, 0.45);
+  --shadow-glow-warn: 0 0 0 1px rgba(246, 178, 60, 0.25), 0 0 24px -6px rgba(246, 178, 60, 0.45);
+  --shadow-glow-danger: 0 0 0 1px rgba(255, 78, 106, 0.25), 0 0 24px -6px rgba(255, 78, 106, 0.45);
+  --shadow-panel: 0 1px 0 0 rgba(255, 255, 255, 0.03) inset, 0 24px 60px -30px rgba(0, 0, 0, 0.9);
+
+  /* ── Animações ── */
+  --animate-grid-pan: grid-pan 6s linear infinite;
+  --animate-scan: scan 5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  --animate-shimmer: shimmer 1.8s ease-in-out infinite;
+  --animate-spin-slow: spin-slow 16s linear infinite;
+  --animate-spin-med: spin-slow 3.2s linear infinite;
+  --animate-spin-fast: spin-slow 1.6s linear infinite;
+  --animate-pulse-ring: pulse-ring 2.4s ease-in-out infinite;
+  --animate-blink: blink 1.3s steps(1, end) infinite;
+  --animate-rise: rise 0.35s ease-out both;
+  --animate-breathe: breathe 3.6s ease-in-out infinite;
+}
+
+@keyframes grid-pan {
+  0% { background-position: 0 0, 0 0; }
+  100% { background-position: 40px 40px, 40px 40px; }
+}
+@keyframes scan {
+  0% { transform: translateY(-120%); }
+  100% { transform: translateY(120%); }
+}
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(260%); }
+}
+@keyframes spin-slow { to { transform: rotate(360deg); } }
+@keyframes pulse-ring {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.15; }
+}
+@keyframes rise {
+  0% { opacity: 0; transform: translateY(6px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+@keyframes breathe {
+  0%, 100% { transform: scale(1); opacity: 0.85; }
+  50% { transform: scale(1.06); opacity: 1; }
+}
+
 :root {
-  --background: #0c0b0a;
-  --foreground: #f2ede8;
+  color-scheme: dark;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-inter);
-  --font-mono: var(--font-jetbrains-mono);
+@layer base {
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    background-image:
+      radial-gradient(1100px 620px at 82% -12%, rgba(53, 228, 198, 0.08), transparent 60%),
+      radial-gradient(900px 520px at 0% 108%, rgba(28, 168, 144, 0.07), transparent 55%);
+    background-attachment: fixed;
+    overflow-x: clip;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
 
-  /* ── Referência: preto quente (não azulado) ── */
-  --color-black: #0c0b0a;
-  --color-zinc-950: #0c0b0a;
-  --color-zinc-900: #161311;
-  --color-zinc-800: #23201d;
-  --color-zinc-700: #35302b;
-  --color-zinc-600: #4a423d;
-  --color-zinc-500: #756c65;
-  --color-zinc-400: #a19891;
-  --color-zinc-300: #c7bfb8;
+  ::selection {
+    background: rgba(53, 228, 198, 0.28);
+    color: #eafffb;
+  }
 
-  /* ── Acento laranja substitui azul/roxo/verde decorativos ── */
-  --color-blue-400: #ff8a3d;
-  --color-blue-500: #ff6a00;
-  --color-blue-600: #ed5f00;
-  --color-blue-700: #cc4e00;
-  --color-purple-400: #ff8a3d;
-  --color-purple-500: #ff6a00;
-  --color-purple-600: #e85d00;
-  --color-pink-500: #ff944d;
-  --color-cyan-500: #ffa04d;
-  --color-teal-500: #ff944d;
-  --color-emerald-200: #ffc9a0;
-  --color-emerald-300: #ffb37a;
-  --color-emerald-400: #ff8a3d;
-  --color-emerald-500: #ff6a00;
-  --color-emerald-600: #e85d00;
+  *:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  img, video, svg, canvas {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Ícones de linha fina (stroke 1.5px) em toda a UI */
+  .lucide {
+    stroke-width: 1.5;
+  }
+
+  /* Scrollbars — finas, táticas */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-line) transparent;
+  }
+  *::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  *::-webkit-scrollbar-thumb {
+    background: var(--color-line);
+    border-radius: 999px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+  }
+  *::-webkit-scrollbar-thumb:hover {
+    background: #24344a;
+    background-clip: padding-box;
+  }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-inter), Arial, Helvetica, sans-serif;
-  overflow-x: clip;
-  max-width: 100vw;
+@layer components {
+  .panel {
+    @apply rounded-xl border border-line bg-surface/70 shadow-panel backdrop-blur-sm;
+  }
+  .input {
+    @apply w-full rounded-lg border border-line bg-raised/80 px-3 py-2 font-mono text-sm text-ink
+      placeholder:text-faint transition-colors focus:border-accent/60 focus:bg-raised;
+  }
+  .textarea-io {
+    @apply w-full resize-y rounded-lg border border-line bg-raised/80 px-3 py-2 font-mono text-sm
+      text-ink placeholder:text-faint transition-colors focus:border-accent/60 focus:bg-raised;
+  }
+  .label {
+    @apply mb-1.5 block text-[11px] font-medium uppercase tracking-[0.14em] text-muted;
+  }
+  .btn {
+    @apply inline-flex select-none items-center justify-center gap-2 rounded-lg border px-3.5 py-2
+      text-sm font-medium transition-all duration-150 disabled:cursor-not-allowed disabled:opacity-45;
+  }
+  .btn-primary {
+    @apply border-accent/40 bg-accent/15 text-accent hover:bg-accent/25 hover:shadow-glow;
+  }
+  .btn-ghost {
+    @apply border-line bg-transparent text-muted hover:border-accent/40 hover:text-ink;
+  }
+  .btn-danger {
+    @apply border-danger/40 bg-danger/10 text-danger hover:bg-danger/20 hover:shadow-glow-danger;
+  }
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-md border border-line bg-raised/70 px-2 py-1
+      font-mono text-xs text-muted transition-colors;
+  }
+  .eyebrow {
+    @apply text-[11px] font-semibold uppercase tracking-[0.22em] text-accent/80;
+  }
+  .grid-backdrop {
+    background-image:
+      linear-gradient(rgba(53, 228, 198, 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(53, 228, 198, 0.06) 1px, transparent 1px);
+    background-size: 40px 40px;
+    mask-image: linear-gradient(180deg, black, transparent);
+    -webkit-mask-image: linear-gradient(180deg, black, transparent);
+  }
 }
 
-img, video, svg, canvas {
-  max-width: 100%;
-  height: auto;
-}
-
-/* PASSO 3 — ícones de linha fina (stroke 1.5px) em toda a UI */
-.lucide {
-  stroke-width: 1.5;
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
 }

@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Key, FileText, Settings, Loader2, PlusCircle, Edit, Trash2, CheckCircle, XCircle } from 'lucide-react'
 import LogoutButton from '@/app/components/logout-button'
+import { AppShell } from '@/app/components/app-shell'
+import { PageHeader, Panel, StatusPill, ErrorBanner } from '@/app/components/qc-ui'
 
 interface License {
   key: string;
@@ -132,9 +134,9 @@ export default function AdminPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-black text-zinc-100 flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-zinc-300" />
-        <p className="ml-3">Carregando Painel Admin...</p>
+      <div className="flex min-h-screen items-center justify-center gap-3 bg-bg text-muted">
+        <Loader2 className="h-5 w-5 animate-spin text-accent" />
+        <p className="font-mono text-sm">Carregando Painel Admin...</p>
       </div>
     );
   }
@@ -147,51 +149,48 @@ export default function AdminPage() {
   // }
 
   return (
-    <div className="min-h-screen w-full max-w-full overflow-x-clip bg-black text-zinc-100 px-4 py-6 sm:p-6 md:p-12">
-      <header className="w-full max-w-5xl mx-auto mb-10 flex flex-wrap justify-between items-center gap-4">
-        <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tighter text-white break-words">
-          Admin <span className="text-blue-500">Dashboard</span>
-        </h1>
-        <LogoutButton variant="danger" />
-      </header>
+    <AppShell>
+      <PageHeader
+        eyebrow="BlackBox Vault"
+        title="Admin Dashboard"
+        subtitle="Gerencie License Keys, créditos e permissões da plataforma."
+        icon={<Key className="h-5 w-5" />}
+        actions={<LogoutButton variant="danger" />}
+      />
 
-      <main className="w-full max-w-6xl mx-auto space-y-8 min-w-0">
+      <main className="w-full min-w-0 space-y-8">
         {/* Gestão de Keys */}
-        <section className="bg-zinc-900 border border-zinc-800 p-4 sm:p-8 rounded-3xl shadow-xl min-w-0">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+        <Panel className="p-4 sm:p-8">
+          <div className="mb-6 flex flex-col justify-between gap-4 md:flex-row md:items-center">
             <div className="flex items-center gap-3">
-              <Key className="w-7 h-7 text-zinc-300" />
+              <Key className="h-6 w-6 text-accent" />
               <div>
-                <h2 className="text-2xl font-bold text-white">Gestão de Keys</h2>
-                <p className="text-zinc-400 text-sm">Crie, ative/desative, edite e delete License Keys.</p>
+                <h2 className="font-display text-xl font-bold text-ink">Gestão de Keys</h2>
+                <p className="text-sm text-muted">Crie, ative/desative, edite e delete License Keys.</p>
               </div>
             </div>
             <button
               onClick={() => { setShowCreateForm(!showCreateForm); setFormError(null); }}
-              className="bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg inline-flex items-center gap-2 transition-all"
+              className="btn btn-primary"
             >
-              <PlusCircle className="w-5 h-5" />
+              <PlusCircle className="h-4 w-4" />
               {showCreateForm ? 'Cancelar' : 'Criar Nova Key'}
             </button>
           </div>
 
-          {formError && (
-            <p className="text-red-400 text-sm mb-4 bg-red-500/10 border border-red-500/30 rounded-lg p-3">
-              {formError}
-            </p>
-          )}
+          {formError && <ErrorBanner message={formError} />}
 
           {/* Formulário de criação */}
           {showCreateForm && (
             <form
               onSubmit={handleCreateLicense}
-              className="bg-zinc-950/60 border border-zinc-800 rounded-2xl p-6 mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+              className="mb-8 grid gap-4 rounded-xl border border-line bg-raised/50 p-6 sm:grid-cols-2 lg:grid-cols-3"
             >
               <div className="sm:col-span-2 lg:col-span-3">
-                <label className="block text-xs font-bold text-zinc-500 uppercase tracking-widest mb-1">License Key</label>
+                <label className="label">License Key</label>
                 <input
                   type="text"
-                  className="w-full p-2.5 rounded-lg bg-zinc-800 border border-zinc-700 text-white font-mono placeholder-zinc-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="input font-mono"
                   placeholder="Ex: BBX-XXXX-XXXX-XXXX"
                   value={newLicenseData.key || ''}
                   onChange={(e) => setNewLicenseData({ ...newLicenseData, key: e.target.value })}
@@ -199,9 +198,9 @@ export default function AdminPage() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-zinc-500 uppercase tracking-widest mb-1">Role</label>
+                <label className="label">Role</label>
                 <select
-                  className="w-full p-2.5 rounded-lg bg-zinc-800 border border-zinc-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="input"
                   value={newLicenseData.role}
                   onChange={(e) => setNewLicenseData({ ...newLicenseData, role: e.target.value as 'user' | 'admin' })}
                 >
@@ -210,41 +209,41 @@ export default function AdminPage() {
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-bold text-zinc-500 uppercase tracking-widest mb-1">Créditos</label>
+                <label className="label">Créditos</label>
                 <input
                   type="number"
                   min={0}
-                  className="w-full p-2.5 rounded-lg bg-zinc-800 border border-zinc-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="input"
                   value={newLicenseData.credits}
                   onChange={(e) => setNewLicenseData({ ...newLicenseData, credits: Number(e.target.value) })}
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-zinc-500 uppercase tracking-widest mb-1">Access Level</label>
+                <label className="label">Access Level</label>
                 <input
                   type="number"
                   min={1}
-                  className="w-full p-2.5 rounded-lg bg-zinc-800 border border-zinc-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="input"
                   value={newLicenseData.access_level}
                   onChange={(e) => setNewLicenseData({ ...newLicenseData, access_level: Number(e.target.value) })}
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-zinc-500 uppercase tracking-widest mb-1">Expira em (opcional)</label>
+                <label className="label">Expira em (opcional)</label>
                 <input
                   type="datetime-local"
-                  className="w-full p-2.5 rounded-lg bg-zinc-800 border border-zinc-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="input"
                   value={newLicenseData.expires_at || ''}
                   onChange={(e) => setNewLicenseData({ ...newLicenseData, expires_at: e.target.value })}
                 />
               </div>
               <div className="flex items-end gap-3">
-                <label className="flex items-center gap-2 text-zinc-400 text-sm">
+                <label className="flex items-center gap-2 text-sm text-muted">
                   <input
                     type="checkbox"
                     checked={newLicenseData.status}
                     onChange={(e) => setNewLicenseData({ ...newLicenseData, status: e.target.checked })}
-                    className="w-4 h-4 accent-blue-600"
+                    className="h-4 w-4 accent-accent"
                   />
                   Ativa
                 </label>
@@ -252,7 +251,7 @@ export default function AdminPage() {
               <div className="sm:col-span-2 lg:col-span-3">
                 <button
                   type="submit"
-                  className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 px-4 rounded-lg transition-all"
+                  className="btn btn-primary w-full"
                 >
                   Criar Key
                 </button>
@@ -264,7 +263,7 @@ export default function AdminPage() {
           <div className="overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0">
             <table className="w-full min-w-[720px] text-left text-sm">
               <thead>
-                <tr className="text-zinc-500 uppercase text-xs tracking-widest border-b border-zinc-800">
+                <tr className="border-b border-line text-xs uppercase tracking-widest text-faint">
                   <th className="py-3 pr-4">Key</th>
                   <th className="py-3 pr-4">Status</th>
                   <th className="py-3 pr-4">Role</th>
@@ -277,28 +276,28 @@ export default function AdminPage() {
               <tbody>
                 {licenses.length === 0 && (
                   <tr>
-                    <td colSpan={7} className="py-10 text-center text-zinc-500">
+                    <td colSpan={7} className="py-10 text-center text-faint">
                       Nenhuma licença encontrada. Crie a primeira Key Mestra.
                     </td>
                   </tr>
                 )}
                 {licenses.map((lic) =>
                   editingLicense?.key === lic.key ? (
-                    <tr key={lic.key} className="border-b border-zinc-800 bg-blue-500/5">
-                      <td className="py-3 pr-4 font-mono text-white text-xs max-w-[140px] truncate" title={lic.key}>{lic.key}</td>
+                    <tr key={lic.key} className="border-b border-line bg-accent/5">
+                      <td className="max-w-[140px] truncate py-3 pr-4 font-mono text-xs text-ink" title={lic.key}>{lic.key}</td>
                       <td className="py-3 pr-4">
                         <input
                           type="checkbox"
                           checked={editingLicense.status}
                           onChange={(e) => setEditingLicense({ ...editingLicense, status: e.target.checked })}
-                          className="w-4 h-4 accent-blue-600"
+                          className="h-4 w-4 accent-accent"
                         />
                       </td>
                       <td className="py-3 pr-4">
                         <select
                           value={editingLicense.role}
                           onChange={(e) => setEditingLicense({ ...editingLicense, role: e.target.value as 'user' | 'admin' })}
-                          className="p-1.5 rounded-md bg-zinc-800 border border-zinc-700 text-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+                          className="input px-2 py-1.5 text-xs"
                         >
                           <option value="user">user</option>
                           <option value="admin">admin</option>
@@ -310,7 +309,7 @@ export default function AdminPage() {
                           min={0}
                           value={editingLicense.credits}
                           onChange={(e) => setEditingLicense({ ...editingLicense, credits: Number(e.target.value) })}
-                          className="w-20 p-1.5 rounded-md bg-zinc-800 border border-zinc-700 text-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+                          className="input w-20 px-2 py-1.5 text-xs"
                         />
                       </td>
                       <td className="py-3 pr-4">
@@ -319,74 +318,70 @@ export default function AdminPage() {
                           min={1}
                           value={editingLicense.access_level}
                           onChange={(e) => setEditingLicense({ ...editingLicense, access_level: Number(e.target.value) })}
-                          className="w-16 p-1.5 rounded-md bg-zinc-800 border border-zinc-700 text-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+                          className="input w-16 px-2 py-1.5 text-xs"
                         />
                       </td>
                       <td className="py-3 pr-4">{formatExpiresAt(lic.expires_at)}</td>
-                      <td className="py-3 text-right whitespace-nowrap space-x-2">
+                      <td className="space-x-2 whitespace-nowrap py-3 text-right">
                         <button
                           onClick={() => handleUpdateLicense(editingLicense)}
-                          className="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold py-1.5 px-3 rounded-md transition-all"
+                          className="btn btn-primary px-3 py-1.5 text-xs"
                         >
                           Salvar
                         </button>
                         <button
                           onClick={() => setEditingLicense(null)}
-                          className="bg-zinc-700 hover:bg-zinc-600 text-white text-xs font-bold py-1.5 px-3 rounded-md transition-all"
+                          className="btn btn-ghost px-3 py-1.5 text-xs"
                         >
                           Cancelar
                         </button>
                       </td>
                     </tr>
                   ) : (
-                    <tr key={lic.key} className="border-b border-zinc-800 hover:bg-zinc-800/40 transition-colors">
-                      <td className="py-3 pr-4 font-mono text-white text-xs max-w-[140px] truncate" title={lic.key}>{lic.key}</td>
+                    <tr key={lic.key} className="border-b border-line transition-colors hover:bg-raised/40">
+                      <td className="max-w-[140px] truncate py-3 pr-4 font-mono text-xs text-ink" title={lic.key}>{lic.key}</td>
                       <td className="py-3 pr-4">
-                        {lic.status ? (
-                          <span className="text-emerald-400 text-xs font-bold">● Ativa</span>
-                        ) : (
-                          <span className="text-red-400 text-xs font-bold">● Inativa</span>
-                        )}
+                        <StatusPill label={lic.status ? 'Ativa' : 'Inativa'} tone={lic.status ? 'good' : 'danger'} />
                       </td>
                       <td className="py-3 pr-4">
                         {lic.role === 'admin' ? (
-                          <span className="text-yellow-400 text-xs font-bold bg-yellow-500/10 px-2 py-0.5 rounded-full">admin</span>
+                          <span className="rounded-md border border-warn/40 bg-warn/10 px-2 py-0.5 font-mono text-xs font-bold text-warn">admin</span>
                         ) : (
-                          <span className="text-zinc-400 text-xs font-bold bg-zinc-800 px-2 py-0.5 rounded-full">user</span>
+                          <span className="chip">user</span>
                         )}
                       </td>
-                      <td className="py-3 pr-4 font-mono text-blue-400">
+                      <td className="py-3 pr-4 font-mono text-accent">
                         {lic.credits} CR
                         {(lic.level || lic.total_spent != null) && (
-                          <span className="block text-[11px] font-sans font-semibold text-zinc-400">
+                          <span className="block font-sans text-[11px] font-semibold text-muted">
                             {lic.level ?? 'Bronze'} · {(lic.total_spent ?? 0)} gastos
                           </span>
                         )}
                       </td>
-                      <td className="py-3 pr-4 font-mono text-zinc-300">Nv {lic.access_level}</td>
-                      <td className="py-3 pr-4 text-zinc-400">{formatExpiresAt(lic.expires_at)}</td>
-                      <td className="py-3 text-right whitespace-nowrap">
+                      <td className="py-3 pr-4 font-mono text-muted">Nv {lic.access_level}</td>
+                      <td className="py-3 pr-4 text-muted">{formatExpiresAt(lic.expires_at)}</td>
+                      <td className="whitespace-nowrap py-3 text-right">
                         <div className="inline-flex gap-1.5">
                           <button
                             onClick={() => setEditingLicense({ ...lic })}
                             title="Editar"
-                            className="p-1.5 rounded-md bg-zinc-800 hover:bg-zinc-700 text-zinc-300 transition-all"
+                            className="rounded-md border border-line bg-raised/70 p-1.5 text-muted transition-all hover:border-accent/40 hover:text-ink"
                           >
-                            <Edit className="w-4 h-4" />
+                            <Edit className="h-4 w-4" />
                           </button>
                           <button
                             onClick={() => handleUpdateLicense({ ...lic, status: !lic.status })}
                             title={lic.status ? 'Desativar' : 'Ativar'}
-                            className={`p-1.5 rounded-md bg-zinc-800 hover:bg-zinc-700 transition-all ${lic.status ? 'text-red-400' : 'text-emerald-400'}`}
+                            className={`rounded-md border border-line bg-raised/70 p-1.5 transition-all hover:border-accent/40 ${lic.status ? 'text-danger' : 'text-good'}`}
                           >
-                            {lic.status ? <XCircle className="w-4 h-4" /> : <CheckCircle className="w-4 h-4" />}
+                            {lic.status ? <XCircle className="h-4 w-4" /> : <CheckCircle className="h-4 w-4" />}
                           </button>
                           <button
                             onClick={() => handleDeleteLicense(lic.key)}
                             title="Deletar"
-                            className="p-1.5 rounded-md bg-zinc-800 hover:bg-red-600 text-red-400 hover:text-white transition-all"
+                            className="rounded-md border border-danger/40 bg-danger/10 p-1.5 text-danger transition-all hover:bg-danger/20"
                           >
-                            <Trash2 className="w-4 h-4" />
+                            <Trash2 className="h-4 w-4" />
                           </button>
                         </div>
                       </td>
@@ -397,33 +392,33 @@ export default function AdminPage() {
               </tbody>
             </table>
           </div>
-        </section>
+        </Panel>
 
         {/* CMS de Conteúdo */}
-        <div className="bg-zinc-900 border border-zinc-800 p-6 sm:p-8 rounded-3xl shadow-xl min-w-0">
-          <div className="flex items-center gap-3 mb-4">
-            <FileText className="w-7 h-7 text-zinc-300" />
-            <h2 className="text-2xl font-bold text-white">CMS de Conteúdo</h2>
+        <Panel className="p-6 sm:p-8">
+          <div className="mb-4 flex items-center gap-3">
+            <FileText className="h-6 w-6 text-accent" />
+            <h2 className="font-display text-xl font-bold text-ink">CMS de Conteúdo</h2>
           </div>
-          <p className="text-zinc-400 mb-6">Edite textos, gerencie aulas e links de ferramentas.</p>
-          <Link href="#" className="bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg inline-flex items-center transition-all">
+          <p className="mb-6 text-sm text-muted">Edite textos, gerencie aulas e links de ferramentas.</p>
+          <Link href="#" className="btn btn-primary">
             Editar Conteúdo
           </Link>
-        </div>
+        </Panel>
 
         {/* Controle Global */}
-        <div className="bg-zinc-900 border border-zinc-800 p-6 sm:p-8 rounded-3xl shadow-xl lg:col-span-2 min-w-0">
-          <div className="flex items-center gap-3 mb-4">
-            <Settings className="w-7 h-7 text-zinc-300" />
-            <h2 className="text-2xl font-bold text-white">Controle Global</h2>
+        <Panel className="p-6 sm:p-8">
+          <div className="mb-4 flex items-center gap-3">
+            <Settings className="h-6 w-6 text-accent" />
+            <h2 className="font-display text-xl font-bold text-ink">Controle Global</h2>
           </div>
-          <p className="text-zinc-400 mb-6">Coloque o site em modo de manutenção e gerencie avisos.</p>
-          <button className="bg-red-700 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-lg transition-all">
+          <p className="mb-6 text-sm text-muted">Coloque o site em modo de manutenção e gerencie avisos.</p>
+          <button className="btn btn-danger">
             Modo Manutenção
           </button>
           {/* Adicionar mais opções de controle global aqui */}
-        </div>
+        </Panel>
       </main>
-    </div>
+    </AppShell>
   );
 }

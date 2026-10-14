@@ -128,73 +128,76 @@ export default function ProxyScraperPanel() {
   }
 
   return (
-    <div className="bg-zinc-900/70 border border-zinc-800 p-5 sm:p-6 rounded-3xl min-w-0">
-      <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
-        <div className="flex items-center gap-4 min-w-0">
-          <div className="p-3 bg-zinc-800/60 rounded-2xl text-emerald-300 shrink-0">
-            <Globe className="w-7 h-7" />
+    <div className="panel p-5">
+      <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-4">
+          <div className="grid h-12 w-12 shrink-0 place-items-center rounded-lg border border-accent/30 bg-accent/10 text-accent">
+            <Globe className="h-6 w-6" />
           </div>
           <div className="min-w-0">
-            <h2 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight">Proxy Scraper <span className="text-emerald-400">PRO</span></h2>
-            <p className="text-zinc-400 text-sm">Licença por validade (7/15/30 dias), ativada por dispositivo.</p>
+            <h2 className="font-display text-xl font-bold tracking-tight text-ink">
+              Proxy Scraper <span className="text-accent">PRO</span>
+            </h2>
+            <p className="text-sm text-muted">Licença por validade (7/15/30 dias), ativada por dispositivo.</p>
           </div>
         </div>
-        <div className="flex items-center gap-1.5 bg-zinc-900 border border-zinc-800 px-4 py-2 rounded-full shrink-0">
-          <CoinIcon size={16} />
-          <span className="text-white font-mono font-bold text-sm">{credits === null ? '—' : credits}</span>
+        <div className="chip shrink-0 !py-1.5">
+          <CoinIcon size={15} />
+          <span className="tabular-nums text-ink">{credits === null ? '—' : credits}</span>
+          <span className="text-faint">CR</span>
         </div>
       </div>
 
-      <div className="flex items-center gap-2 text-xs text-zinc-500 mb-5">
-        <ShieldCheck className="w-4 h-4 text-zinc-300" />
+      <div className="mb-5 flex items-center gap-2 font-mono text-xs text-faint">
+        <ShieldCheck className="h-4 w-4 text-accent" />
         A chave é separada do seu login e fica vinculada a um único dispositivo (troca liberada pelo painel).
       </div>
 
       {aviso && (
-        <div className="mb-4 bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-sm px-4 py-3 rounded-xl break-words">
+        <div className="mb-4 break-words rounded-lg border border-good/40 bg-good/10 px-3 py-2 font-mono text-xs text-good">
           {aviso}
         </div>
       )}
       {erro && (
-        <div className="mb-4 bg-red-500/10 border border-red-500/30 text-red-400 text-sm px-4 py-3 rounded-xl break-words">
+        <div className="mb-4 break-words rounded-lg border border-danger/40 bg-danger/10 px-3 py-2 font-mono text-xs text-danger">
           {erro}
         </div>
       )}
 
-      <div className="grid sm:grid-cols-3 gap-3 mb-8">
+      <div className="mb-8 grid gap-3 sm:grid-cols-3">
         {PLANOS.map((p) => {
           const semSaldo = credits !== null && credits < p.price
           return (
             <div
               key={p.id}
-              className={`relative bg-zinc-950/60 border p-4 rounded-2xl flex flex-col gap-3 transition-all ${
-                p.destaque ? 'border-emerald-500/50' : 'border-zinc-800'
+              className={`relative flex flex-col gap-3 rounded-xl border p-4 transition-all ${
+                p.destaque ? 'border-accent/50 bg-accent/5' : 'border-line bg-raised/40'
               }`}
             >
               {p.destaque && (
-                <span className="absolute -top-2 right-3 text-[10px] font-bold text-black bg-emerald-400 px-2 py-0.5 rounded-full">
+                <span className="absolute -top-2 right-3 rounded-full bg-accent px-2 py-0.5 text-[10px] font-bold text-bg">
                   MELHOR VALOR
                 </span>
               )}
-              <div className="flex items-center gap-2 text-zinc-300">
-                <Clock className="w-4 h-4" />
-                <span className="font-semibold text-white">{p.label}</span>
+              <div className="flex items-center gap-2 text-muted">
+                <Clock className="h-4 w-4" />
+                <span className="font-semibold text-ink">{p.label}</span>
               </div>
               <div className="flex items-baseline gap-1.5">
                 <CoinIcon size={18} />
-                <span className="text-2xl font-mono font-bold text-white">{p.price}</span>
-                <span className="text-zinc-500 text-xs">CR</span>
+                <span className="font-mono text-2xl font-bold text-ink">{p.price}</span>
+                <span className="text-xs text-faint">CR</span>
               </div>
               <button
                 onClick={() => comprar(p.id, p.price)}
                 disabled={busy !== null || semSaldo}
-                className={`mt-auto flex items-center justify-center gap-2 text-sm px-4 py-2.5 rounded-xl font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
+                className={`btn mt-auto w-full ${
                   semSaldo
-                    ? 'bg-zinc-800 text-red-400 border border-red-500/40'
-                    : 'bg-emerald-600 hover:bg-emerald-500 text-white'
-                }`}
+                    ? 'border-danger/40 bg-danger/10 text-danger hover:bg-danger/20'
+                    : 'btn-primary'
+                } disabled:cursor-not-allowed disabled:opacity-50`}
               >
-                {busy === p.id ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                {busy === p.id ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
                 {busy === p.id ? 'Gerando...' : semSaldo ? 'Saldo insuficiente' : 'Comprar'}
               </button>
             </div>
@@ -203,13 +206,13 @@ export default function ProxyScraperPanel() {
       </div>
 
       <div>
-        <h3 className="text-sm font-bold text-zinc-400 uppercase tracking-widest mb-3">Minhas Licenças</h3>
+        <h3 className="label">Minhas Licenças</h3>
         {loading ? (
-          <div className="text-zinc-500 text-sm flex items-center gap-2">
-            <Loader2 className="w-4 h-4 animate-spin" /> Carregando licenças...
+          <div className="flex items-center gap-2 text-sm text-muted">
+            <Loader2 className="h-4 w-4 animate-spin" /> Carregando licenças...
           </div>
         ) : licenses.length === 0 ? (
-          <p className="text-zinc-500 text-sm">Você ainda não possui licenças do Proxy Scraper. Escolha um plano acima.</p>
+          <p className="text-sm text-muted">Você ainda não possui licenças do Proxy Scraper. Escolha um plano acima.</p>
         ) : (
           <div className="grid gap-3">
             {licenses.map((l) => {
@@ -217,46 +220,46 @@ export default function ProxyScraperPanel() {
               return (
                 <div
                   key={l.key}
-                  className="bg-zinc-950/60 border border-zinc-800 p-4 rounded-2xl flex flex-wrap items-center gap-3 justify-between"
+                  className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-line bg-raised/40 p-4"
                 >
-                  <div className="flex items-center gap-3 min-w-0 flex-1">
-                    <div className="p-2 bg-zinc-800/60 rounded-lg text-zinc-300 shrink-0">
-                      <KeyRound className="w-4 h-4" />
+                  <div className="flex min-w-0 flex-1 items-center gap-3">
+                    <div className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-line bg-surface text-muted">
+                      <KeyRound className="h-4 w-4" />
                     </div>
                     <div className="min-w-0">
-                      <p className="font-mono font-bold text-white text-sm truncate">{maskKey(l.key)}</p>
-                      <div className="flex flex-wrap items-center gap-2 mt-1 text-xs">
-                        <span className="text-zinc-400">{l.plan_label}</span>
+                      <p className="truncate font-mono text-sm font-bold text-ink">{maskKey(l.key)}</p>
+                      <div className="mt-1 flex flex-wrap items-center gap-2 text-xs">
+                        <span className="text-muted">{l.plan_label}</span>
                         {expirada ? (
-                          <span className="text-red-400 bg-red-500/10 border border-red-500/30 px-2 py-0.5 rounded-full font-bold">EXPIRADA</span>
+                          <span className="rounded-full border border-danger/40 bg-danger/10 px-2 py-0.5 font-bold text-danger">EXPIRADA</span>
                         ) : l.activated ? (
-                          <span className="text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5 rounded-full font-bold">
+                          <span className="rounded-full border border-good/40 bg-good/10 px-2 py-0.5 font-bold text-good">
                             {l.days_left}d restantes
                           </span>
                         ) : (
-                          <span className="text-amber-400 bg-amber-500/10 border border-amber-500/30 px-2 py-0.5 rounded-full font-bold">NÃO ATIVADA</span>
+                          <span className="rounded-full border border-warn/40 bg-warn/10 px-2 py-0.5 font-bold text-warn">NÃO ATIVADA</span>
                         )}
                         {!l.status && (
-                          <span className="text-red-400 bg-red-500/10 border border-red-500/30 px-2 py-0.5 rounded-full font-bold">INATIVA</span>
+                          <span className="rounded-full border border-danger/40 bg-danger/10 px-2 py-0.5 font-bold text-danger">INATIVA</span>
                         )}
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 shrink-0">
+                  <div className="flex shrink-0 items-center gap-2">
                     <button
                       onClick={() => copy(l.key)}
                       title="Copiar chave"
-                      className="p-2 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white transition-colors"
+                      className="btn btn-ghost !px-2.5"
                     >
-                      {copied === l.key ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+                      {copied === l.key ? <Check className="h-4 w-4 text-good" /> : <Copy className="h-4 w-4" />}
                     </button>
                     <button
                       onClick={() => resetDevice(l.key)}
                       disabled={busy !== null || !l.activated}
                       title={l.activated ? 'Desvincular deste dispositivo' : 'Licença ainda não ativada'}
-                      className="flex items-center gap-1.5 text-xs px-3 py-2 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                      className="btn btn-ghost disabled:cursor-not-allowed disabled:opacity-40"
                     >
-                      {busy === 'reset:' + l.key ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RotateCcw className="w-3.5 h-3.5" />}
+                      {busy === 'reset:' + l.key ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <RotateCcw className="h-3.5 w-3.5" />}
                       Trocar dispositivo
                     </button>
                   </div>

@@ -51,6 +51,7 @@ Thumbs.db
 
 # --- Backups locais ---
 /backups/
+/.ui_backup/
 
 # --- Scripts temporarios de manutencao ---
 _*.ps1

@@ -1,10 +1,11 @@
 'use client'
 import { useEffect, useState } from 'react'
-import Link from 'next/link'
-import { Wrench, ChevronLeft, Download, Lock, Zap, Mail, MessageSquare, ShieldCheck, Globe, Users, Smartphone } from 'lucide-react'
+import { Wrench, Download, Lock, Zap, Mail, MessageSquare, ShieldCheck, Globe, Users, Smartphone } from 'lucide-react'
 import LogoutButton from '@/app/components/logout-button'
 import CoinIcon from '@/app/components/coin-icon'
 import ProxyScraperPanel from './_components/proxy-scraper-panel'
+import { AppShell } from '@/app/components/app-shell'
+import { PageHeader, StatusPill } from '@/app/components/qc-ui'
 
 interface Ferramenta {
   id: string; nome: string; descricao: string; custo_creditos: number; link_download: string;
@@ -143,55 +144,57 @@ export default function FerramentasPage() {
     }
   }
 
-  if (loading) return <div className="h-screen bg-black text-white flex items-center justify-center font-mono">CARREGANDO_FERRAMENTAS...</div>
+  if (loading)
+    return (
+      <AppShell>
+        <div className="flex items-center justify-center gap-3 py-24 font-mono text-sm text-muted">
+          <Wrench className="h-4 w-4 animate-pulse text-accent" />
+          carregando_ferramentas<span className="animate-blink">_</span>
+        </div>
+      </AppShell>
+    )
 
   return (
-    <div className="min-h-screen w-full max-w-full overflow-x-clip bg-black text-zinc-100 px-4 py-6 sm:p-6 md:p-12">
-      <div className="w-full max-w-4xl mx-auto min-w-0">
-        <Link href="/" className="flex items-center gap-2 text-zinc-500 hover:text-white transition-colors text-sm mb-12 group">
-          <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Voltar para a vitrine
-        </Link>
-
-        <header className="mb-8 flex flex-wrap items-center justify-between gap-3">
-          <div className="flex flex-wrap items-center gap-4 min-w-0">
-            <div className="p-3 bg-zinc-800/60 rounded-2xl text-zinc-300 shrink-0">
-              <Wrench className="w-8 h-8" />
-            </div>
-            <div className="min-w-0">
-              <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight break-words">Ferramentas</h1>
-              <p className="text-zinc-400 text-sm mt-1">Softwares, licenças e utilitários de escala.</p>
-            </div>
-          </div>
-          <div className="flex flex-wrap items-center gap-2 shrink-0">
-            <span className="flex items-center gap-1.5 bg-zinc-900 border border-zinc-800 px-4 py-2 rounded-full">
-              <CoinIcon size={16} />
-              <span className="text-white font-mono font-bold text-sm whitespace-nowrap">{credits === null ? '—' : credits}</span>
+    <AppShell>
+      <PageHeader
+        eyebrow="Ferramentas"
+        title="Ferramentas & Licenças"
+        subtitle="Softwares, licenças e utilitários de escala — desbloqueio por créditos."
+        icon={<Wrench className="h-5 w-5" />}
+        actions={
+          <div className="flex items-center gap-2">
+            <span className="chip">
+              <CoinIcon size={14} />
+              <span className="tabular-nums text-ink">{credits === null ? '—' : credits}</span>
+              <span className="text-faint">CR</span>
             </span>
             <LogoutButton />
           </div>
-        </header>
+        }
+      />
 
-        {aviso && (
-          <div className="mb-4 bg-red-500/10 border border-red-500/30 text-red-400 text-sm px-4 py-3 rounded-xl">
-            {aviso}
-          </div>
-        )}
-
-        <div className="mb-6 flex items-center gap-2 text-xs text-zinc-500">
-          <ShieldCheck className="w-4 h-4 text-zinc-300" />
-          Desbloqueio vinculado à sua License Key — ferramentas ativas não cobram de novo.
+      {aviso && (
+        <div className="mb-4 flex items-start gap-2 rounded-lg border border-danger/40 bg-danger/10 px-3 py-2 font-mono text-xs text-danger">
+          <span className="mt-0.5 shrink-0">!</span>
+          <span className="break-all">{aviso}</span>
         </div>
+      )}
 
-        {/* Proxy Scraper PRO — licença validade + dispositivo (compra com créditos) */}
-        <div className="mb-8">
-          <ProxyScraperPanel />
-        </div>
+      <div className="mb-6 flex items-center gap-2 font-mono text-xs text-faint">
+        <ShieldCheck className="h-4 w-4 text-accent" />
+        Desbloqueio vinculado à sua License Key — ferramentas ativas não cobram de novo.
+      </div>
+
+      {/* Proxy Scraper PRO — licença validade + dispositivo (compra com créditos) */}
+      <div className="mb-8">
+        <ProxyScraperPanel />
+      </div>
 
         <div className="grid gap-3">
           {ferramentas.length === 0 ? (
-            <div className="bg-zinc-900 p-12 rounded-3xl text-center border border-zinc-800">
-              <Lock className="w-12 h-12 text-zinc-700 mx-auto mb-4" />
-              <p className="text-zinc-500">Nenhuma ferramenta disponível no momento.</p>
+            <div className="panel p-12 text-center">
+              <Lock className="mx-auto mb-4 h-12 w-12 text-faint" />
+              <p className="text-muted">Nenhuma ferramenta disponível no momento.</p>
             </div>
           ) : (
             ferramentas.map((ferramenta) => {
@@ -200,51 +203,47 @@ export default function FerramentasPage() {
               return (
               <div
                 key={ferramenta.id}
-                className="group bg-zinc-900/70 border border-zinc-800 p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-between hover:bg-zinc-800/50 hover:border-zinc-700 transition-all min-w-0"
+                className="panel group flex flex-col gap-3 p-4 transition-all hover:border-accent/40 sm:flex-row sm:items-center sm:justify-between"
               >
-                <div className="flex items-center gap-4 min-w-0 flex-1">
-                  <div className="w-10 h-10 shrink-0 rounded-full bg-zinc-800 flex items-center justify-center text-zinc-500 group-hover:bg-purple-500 group-hover:text-white transition-all">
-                    <Icon className="w-4 h-4" />
+                <div className="flex min-w-0 flex-1 items-center gap-4">
+                  <div className="grid h-10 w-10 shrink-0 place-items-center rounded-lg border border-line bg-raised/60 text-muted transition-colors group-hover:border-accent/40 group-hover:text-accent">
+                    <Icon className="h-4 w-4" />
                   </div>
                   <div className="min-w-0">
-                    <h3 className="text-white font-medium group-hover:text-purple-400 transition-colors flex items-center gap-2 flex-wrap">
+                    <h3 className="flex flex-wrap items-center gap-2 font-medium text-ink transition-colors group-hover:text-accent">
                       {ferramenta.nome}
-                      {ativa && (
-                        <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5 rounded-full">
-                          ATIVA
-                        </span>
-                      )}
+                      {ativa && <StatusPill label="ativa" tone="good" />}
                     </h3>
-                    <p className="text-zinc-500 text-xs line-clamp-1">{ferramenta.descricao}</p>
+                    <p className="line-clamp-1 text-xs text-muted">{ferramenta.descricao}</p>
                   </div>
                 </div>
-                <div className="flex flex-wrap items-center gap-2 sm:gap-3 sm:shrink-0 sm:justify-end">
+                <div className="flex flex-wrap items-center gap-2 sm:shrink-0 sm:justify-end">
                   {ativa ? (
                     ferramenta.link_download && ferramenta.link_download !== '#' ? (
                       <a
                         href={ferramenta.link_download}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-2 bg-emerald-600 text-white text-xs px-4 py-2 rounded-full hover:bg-emerald-500 transition-all"
+                        className="btn btn-primary"
                       >
-                        <Download className="w-3 h-3" /> Baixar
+                        <Download className="h-3.5 w-3.5" /> Baixar
                       </a>
                     ) : (
-                      <span className="flex items-center gap-2 bg-emerald-600/20 border border-emerald-500/30 text-emerald-300 text-xs px-4 py-2 rounded-full">
-                        <Download className="w-3 h-3" /> Ativa
+                      <span className="inline-flex items-center gap-2 rounded-lg border border-good/40 bg-good/10 px-4 py-2 text-xs text-good">
+                        <Download className="h-3 w-3" /> Ativa
                       </span>
                     )
                   ) : (
                     <button
                       onClick={() => desbloquear(ferramenta)}
                       disabled={pagandoId === ferramenta.id}
-                      className={`flex items-center gap-2 text-xs px-4 py-2 rounded-full transition-all shrink-0 disabled:opacity-60 disabled:cursor-wait ${
+                      className={`btn shrink-0 disabled:cursor-wait disabled:opacity-60 ${
                         credits !== null && credits < ferramenta.custo_creditos
-                          ? 'bg-zinc-800 text-red-400 border border-red-500/40'
-                          : 'bg-zinc-800 text-white hover:bg-purple-600'
+                          ? 'border-danger/40 bg-danger/10 text-danger'
+                          : 'btn-primary'
                       }`}
                     >
-                      <Zap className="w-3 h-3 text-zinc-300" />
+                      <Zap className="h-3.5 w-3.5" />
                       {pagandoId === ferramenta.id ? 'Processando...' : <><CoinIcon size={13} /> {ferramenta.custo_creditos} · Desbloquear</>}
                     </button>
                   )}
@@ -254,7 +253,6 @@ export default function FerramentasPage() {
             })
           )}
         </div>
-      </div>
-    </div>
+    </AppShell>
   )
 }
