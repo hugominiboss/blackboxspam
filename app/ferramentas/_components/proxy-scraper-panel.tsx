@@ -1,7 +1,8 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { Globe, Copy, Check, RotateCcw, KeyRound, Clock, ShieldCheck, Loader2 } from 'lucide-react'
+import { Globe, Copy, Check, RotateCcw, KeyRound, Clock, ShieldCheck, Loader2, ChevronDown } from 'lucide-react'
 import CoinIcon from '@/app/components/coin-icon'
+import { StatusPill, ErrorBanner } from '@/app/components/qc-ui'
 
 type License = {
   key: string
@@ -34,6 +35,9 @@ export default function ProxyScraperPanel() {
   const [aviso, setAviso] = useState<string | null>(null)
   const [erro, setErro] = useState<string | null>(null)
   const [copied, setCopied] = useState<string | null>(null)
+  // Colapsado por padrão: mostra só a linha compacta; planos/licenças expandem ao clicar.
+  const [expandido, setExpandido] = useState(false)
+  const ativas = licenses.filter((l) => l.days_left > 0 && l.status).length
 
   async function load() {
     setLoading(true)
@@ -128,55 +132,65 @@ export default function ProxyScraperPanel() {
   }
 
   return (
-    <div className="panel p-5">
-      <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-4">
-          <div className="grid h-12 w-12 shrink-0 place-items-center rounded-lg border border-accent/30 bg-accent/10 text-accent">
-            <Globe className="h-6 w-6" />
-          </div>
-          <div className="min-w-0">
-            <h2 className="font-display text-xl font-bold tracking-tight text-ink">
-              Proxy Scraper <span className="text-accent">PRO</span>
-            </h2>
-            <p className="text-sm text-muted">Licença por validade (7/15/30 dias), ativada por dispositivo.</p>
-          </div>
+    <div className="panel group flex flex-col gap-3 p-3 transition-all hover:border-accent/40 sm:p-4">
+      {/* Linha compacta (igual às demais ferramentas) — clica para expandir os planos. */}
+      <button
+        type="button"
+        onClick={() => setExpandido((v) => !v)}
+        aria-expanded={expandido}
+        className="flex min-w-0 flex-1 cursor-pointer items-center gap-3 text-left sm:gap-4"
+      >
+        <div className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-line bg-raised/60 text-muted transition-colors group-hover:border-accent/40 group-hover:text-accent sm:h-10 sm:w-10">
+          <Globe className="h-4 w-4" />
         </div>
-        <div className="chip shrink-0 !py-1.5">
-          <CoinIcon size={15} />
-          <span className="tabular-nums text-ink">{credits === null ? '—' : credits}</span>
-          <span className="text-faint">CR</span>
+        <div className="min-w-0 flex-1">
+          <h3 className="flex flex-wrap items-center gap-2 font-medium text-ink transition-colors group-hover:text-accent">
+            Proxy Scraper PRO
+            {ativas > 0 ? (
+              <StatusPill label={`${ativas} ativa${ativas > 1 ? 's' : ''}`} tone="good" />
+            ) : (
+              <StatusPill label="licença por validade" tone="accent" />
+            )}
+          </h3>
+          <p className="line-clamp-1 text-xs text-muted">Licença por validade (7/15/30 dias), ativada por dispositivo.</p>
         </div>
-      </div>
-
-      <div className="mb-5 flex items-center gap-2 font-mono text-xs text-faint">
-        <ShieldCheck className="h-4 w-4 text-accent" />
-        A chave é separada do seu login e fica vinculada a um único dispositivo (troca liberada pelo painel).
-      </div>
+        <div className="flex shrink-0 items-center gap-2">
+          <span className="chip hidden !py-1 text-[11px] sm:inline-flex">
+            <CoinIcon size={12} />
+            <span className="tabular-nums">{credits ?? '—'}</span>
+            <span className="text-faint">CR</span>
+          </span>
+          <ChevronDown className={`h-4 w-4 text-faint transition-transform ${expandido ? 'rotate-180' : ''}`} />
+        </div>
+      </button>
 
       {aviso && (
-        <div className="mb-4 break-words rounded-lg border border-good/40 bg-good/10 px-3 py-2 font-mono text-xs text-good">
+        <div className="break-words rounded-lg border border-good/40 bg-good/10 px-3 py-2 font-mono text-xs text-good">
           {aviso}
         </div>
       )}
-      {erro && (
-        <div className="mb-4 break-words rounded-lg border border-danger/40 bg-danger/10 px-3 py-2 font-mono text-xs text-danger">
-          {erro}
-        </div>
-      )}
+      {erro && <ErrorBanner message={erro} />}
 
-      <div className="mb-8 grid gap-3 sm:grid-cols-3">
+      {expandido && (
+        <>
+          <div className="flex items-center gap-2 font-mono text-xs text-faint">
+            <ShieldCheck className="h-4 w-4 shrink-0 text-accent" />
+            A chave é separada do seu login e fica vinculada a um único dispositivo (troca liberada pelo painel).
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-3">
         {PLANOS.map((p) => {
           const semSaldo = credits !== null && credits < p.price
           return (
             <div
               key={p.id}
               className={`relative flex flex-col gap-3 rounded-xl border p-4 transition-all ${
-                p.destaque ? 'border-accent/50 bg-accent/5' : 'border-line bg-raised/40'
+                p.destaque ? 'border-accent/40 bg-raised/40' : 'border-line bg-raised/40'
               }`}
             >
               {p.destaque && (
-                <span className="absolute -top-2 right-3 rounded-full bg-accent px-2 py-0.5 text-[10px] font-bold text-bg">
-                  MELHOR VALOR
+                <span className="absolute -top-2 right-3 rounded-full border border-accent/40 bg-surface px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider text-accent">
+                  Melhor valor
                 </span>
               )}
               <div className="flex items-center gap-2 text-muted">
@@ -245,7 +259,7 @@ export default function ProxyScraperPanel() {
                       </div>
                     </div>
                   </div>
-                  <div className="flex shrink-0 items-center gap-2">
+                  <div className="flex w-full shrink-0 items-center gap-2 sm:w-auto">
                     <button
                       onClick={() => copy(l.key)}
                       title="Copiar chave"
@@ -257,7 +271,7 @@ export default function ProxyScraperPanel() {
                       onClick={() => resetDevice(l.key)}
                       disabled={busy !== null || !l.activated}
                       title={l.activated ? 'Desvincular deste dispositivo' : 'Licença ainda não ativada'}
-                      className="btn btn-ghost disabled:cursor-not-allowed disabled:opacity-40"
+                      className="btn btn-ghost flex-1 justify-center disabled:cursor-not-allowed disabled:opacity-40 sm:flex-none"
                     >
                       {busy === 'reset:' + l.key ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <RotateCcw className="h-3.5 w-3.5" />}
                       Trocar dispositivo
@@ -269,6 +283,8 @@ export default function ProxyScraperPanel() {
           </div>
         )}
       </div>
+        </>
+      )}
     </div>
   )
 }
