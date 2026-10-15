@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { getSupabaseAdmin } from '@/app/lib/license-guard';
 import { nivelParaGasto } from '@/app/lib/levels';
+import { notifyUser } from '@/app/lib/notify-server';
 
 /**
  * Compra atômica de conteúdo (aula/ferramenta) — Onda 3 (antifraude).
@@ -52,7 +53,7 @@ export async function POST(req: NextRequest) {
   // 1) Valida a licença (ativa e não expirada).
   const { data: lic, error: licErr } = await supabaseAdmin
     .from('licenses')
-    .select('key, status, credits, total_spent, expires_at')
+    .select('key, status, credits, total_spent, level, expires_at')
     .eq('key', licenseKey)
     .single();
 
@@ -110,6 +111,11 @@ export async function POST(req: NextRequest) {
   if (debitErr || !debitado) {
     const { data: recheck } = await supabaseAdmin.from('licenses').select('credits').eq('key', licenseKey).single();
     const saldo = recheck?.credits ?? 0;
+    // 🔔 Saldo insuficiente no sino (sem Telegram: evita spam a cada clique).
+    notifyUser(licenseKey, 'creditos_insuficientes', 'Saldo insuficiente', `Faltam créditos para desbloquear ${content_id}. Saldo: ${saldo} CR.`, {
+      link: '/perfil/pagamentos',
+      metadata: { content_id, content_type, credits: saldo },
+    });
     return NextResponse.json({ message: `Créditos insuficientes. Saldo: ${saldo} CR.`, credits: saldo }, { status: 409 });
   }
 
@@ -127,6 +133,21 @@ export async function POST(req: NextRequest) {
       .update({ credits: debitado.credits + price, total_spent: (debitado.total_spent ?? gastoAcumulado) - price })
       .eq('key', licenseKey);
     return NextResponse.json({ message: 'Falha ao registrar desbloqueio. Débito estornado.', error: insErr.message }, { status: 500 });
+  }
+
+  // 🔔 Desbloqueio + level-up (se subiu de nível, manda as duas).
+  const nivelAntes = lic.level ?? nivelParaGasto(lic.total_spent ?? 0).atual;
+  notifyUser(licenseKey, 'unlock', 'Conteúdo desbloqueado', `${content_type === 'aula' ? 'Aula' : 'Ferramenta'} ${content_id} · -${price} CR · saldo ${debitado.credits} CR.`, {
+    link: content_type === 'aula' ? '/academia' : '/ferramentas',
+    metadata: { content_id, content_type, spent: price, credits: debitado.credits },
+  });
+  if (debitado.level && debitado.level !== nivelAntes) {
+    notifyUser(licenseKey, 'level_up', `Subiu para ${debitado.level}!`, `Total gasto: ${debitado.total_spent} CR. Continue desbloqueando para chegar ao Black.`, {
+      link: '/perfil',
+      metadata: { level: debitado.level, total_spent: debitado.total_spent },
+      telegram: `🏆 Você subiu para ${debitado.level}!
+Total gasto: ${debitado.total_spent} CR.`,
+    });
   }
 
   return NextResponse.json(

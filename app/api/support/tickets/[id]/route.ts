@@ -3,6 +3,7 @@ import { cookies } from 'next/headers'
 import { getSupabaseAdmin, requireAdmin } from '@/app/lib/license-guard'
 import { SUPPORT_STATUS, isSlaBreached } from '@/app/lib/support'
 import { getSessionLicenseKey, notifyTelegram } from '@/app/lib/support-server'
+import { notifyUser } from '@/app/lib/notify-server'
 
 /** GET /api/support/tickets/[id] — dono vê mensagens públicas; admin vê tudo. */
 export async function loadTicket(id: string) {
@@ -66,7 +67,17 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     const kind = body?.kind === 'nota-interna' ? 'nota-interna' : 'publica'
     const { error } = await supabaseAdmin.from('support_messages').insert({ ticket_id: id, sender: 'suporte', kind, body: text })
     if (error) return NextResponse.json({ message: 'Falha ao responder.', error: error.message }, { status: 500 })
-    if (kind === 'publica') await supabaseAdmin.from('support_tickets').update({ status: 'aguardando-cliente' }).eq('id', id)
+    if (kind === 'publica') {
+      await supabaseAdmin.from('support_tickets').update({ status: 'aguardando-cliente' }).eq('id', id)
+      // 🔔 Cliente recebe no sino + Telegram (se vinculado).
+      notifyUser(ticket.license_key, 'ticket_resposta', 'Resposta no seu ticket', `${ticket.subject} — ${text.slice(0, 140)}`, {
+        link: `/suporte/${id}`,
+        metadata: { ticket_id: id },
+        telegram: `💬 Resposta no seu ticket
+${ticket.subject}
+${text.slice(0, 500)}`,
+      })
+    }
     return NextResponse.json({ ok: true, kind })
   }
 
@@ -131,5 +142,12 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   if (error) return NextResponse.json({ message: 'Falha ao atualizar.', error: error.message }, { status: 500 })
   if (update.rating) notifyTelegram(`⭐ <b>Avaliação ${update.rating}/5</b> #${id.slice(0, 8)}
 ${ticket.subject}`)
+  // 🔔 Encerrou (com ou sem avaliação): avisa no sino.
+  if (update.status === 'fechado' || update.status === 'resolvido') {
+    notifyUser(ticket.license_key, 'ticket_fechado', 'Ticket encerrado', `${ticket.subject}${update.rating ? ` — avaliado ★ ${update.rating}/5` : ''}`, {
+      link: `/suporte/${id}`,
+      metadata: { ticket_id: id, rating: update.rating ?? null },
+    })
+  }
   return NextResponse.json({ ok: true, ...update })
 }

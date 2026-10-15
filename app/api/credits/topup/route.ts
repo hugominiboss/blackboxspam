@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { getSupabaseAdmin } from '@/app/lib/license-guard';
+import { notifyUser } from '@/app/lib/notify-server';
 
 /**
  * Topup SIMULADO de créditos (modo demonstração — sem gateway real).
@@ -64,6 +65,14 @@ export async function POST(req: NextRequest) {
       { status: 500 }
     );
   }
+
+  // 🔔 Avisa no sino (+Telegram se vinculado): recarga confirmada.
+  notifyUser(licenseKey, 'creditos_topup', `+${added} CR adicionados`, `Plano ${planId} · saldo atual ${atualizado.credits} CR.`, {
+    link: '/perfil',
+    metadata: { planId, added, credits: atualizado.credits },
+    telegram: `💰 +${added} CR adicionados
+Saldo atual: ${atualizado.credits} CR.`,
+  });
 
   return NextResponse.json({
     key: data.key,

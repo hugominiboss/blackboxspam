@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { CreditCard, KeyRound, Shield, Copy, Check, Wrench } from 'lucide-react'
+import { CreditCard, KeyRound, Shield, Copy, Check, Wrench, Bell } from 'lucide-react'
 import LogoutButton from '@/app/components/logout-button'
 import CoinIcon from '@/app/components/coin-icon'
 import LevelCard from './_components/level-card'
@@ -160,6 +160,9 @@ export default function ProfilePage() {
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <Link href="/ferramentas" className="btn btn-ghost">
               <Wrench className="h-4 w-4" /> Ferramentas
+            </Link>
+            <Link href="/perfil/notificacoes" className="btn btn-ghost">
+              <Bell className="h-4 w-4" /> Notificações
             </Link>
             <LogoutButton variant="outline" label="Encerrar sessão" />
           </div>

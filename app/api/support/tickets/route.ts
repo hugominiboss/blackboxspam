@@ -9,6 +9,7 @@ import {
   type SupportCategory,
 } from '@/app/lib/support'
 import { buildContextSnapshot, getSessionLicenseKey, notifyTelegram } from '@/app/lib/support-server'
+import { notifyUser } from '@/app/lib/notify-server'
 
 /**
  * Setor de Suporte — Tickets (nível intermediário).
@@ -153,6 +154,11 @@ export async function POST(req: NextRequest) {
   notifyTelegram(
     `🎫 <b>Novo ticket</b> #${ticket.id.slice(0, 8)}\n<b>${catLabel}</b> · ${policy.priority} · SLA ${policy.slaHours}h\n${subject}\nNível ${snapshot.level} · ${snapshot.credits} CR · Proxy: ${snapshot.proxy_scraper ? (snapshot.proxy_scraper.expirado ? 'expirado' : 'ativo') : '—'}`
   )
+  // Confirmação in-app para o cliente (sino).
+  notifyUser(licenseKey, 'anuncio', 'Ticket aberto', `${catLabel}: ${subject}`, {
+    link: `/suporte/${ticket.id}`,
+    metadata: { ticket_id: ticket.id, category },
+  })
 
   return NextResponse.json({ ok: true, ticket }, { status: 201 })
 }

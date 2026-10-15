@@ -8,6 +8,7 @@ import {
   isPlanId,
   generateProductKey,
 } from '@/app/lib/product-licenses';
+import { notifyUser } from '@/app/lib/notify-server';
 
 /**
  * Compra de licença do Proxy Scraper.
@@ -116,6 +117,21 @@ export async function POST(req: NextRequest) {
       { message: 'Falha ao gerar a licença. Tente novamente.', error: String(lastErr?.message || lastErr) },
       { status: 500 }
     );
+  }
+
+  // 🔔 Licença Proxy criada (+ level-up se subiu).
+  notifyUser(licenseKey, 'proxy_criada', 'Licença Proxy Scraper ativa', `Plano ${PLANS[created.plan as keyof typeof PLANS]?.label ?? created.plan} · expira ${created.expires_at ? new Date(created.expires_at).toLocaleDateString('pt-BR') : '—'} · chave ${created.key}.`, {
+    link: '/ferramentas',
+    metadata: { proxy_key: created.key, plan: created.plan, expires_at: created.expires_at },
+    telegram: `🔑 Proxy Scraper ativo (${PLANS[created.plan as keyof typeof PLANS]?.label ?? created.plan})
+Chave: ${created.key}
+Expira: ${created.expires_at ? new Date(created.expires_at).toLocaleDateString('pt-BR') : '—'}`,
+  });
+  if (debitado.level && debitado.level !== (owner.level ?? nivelParaGasto(owner.total_spent ?? 0).atual)) {
+    notifyUser(licenseKey, 'level_up', `Subiu para ${debitado.level}!`, `Total gasto: ${debitado.total_spent} CR.`, {
+      link: '/perfil',
+      metadata: { level: debitado.level, total_spent: debitado.total_spent },
+    });
   }
 
   return NextResponse.json(

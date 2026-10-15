@@ -3,6 +3,7 @@ import { useState, type ReactNode } from 'react'
 import { Menu, ShieldCheck, X } from 'lucide-react'
 import { Reactor } from './reactor'
 import { Sidebar } from './sidebar'
+import { NotifBell } from './notif-bell'
 
 /**
  * AppShell — clone da `Layout.tsx` do QuadCore.
@@ -61,6 +62,7 @@ export function AppShell({ children, active = false }: { children: ReactNode; ac
           </div>
 
           <div className="ml-auto flex items-center gap-2">
+            <NotifBell />
             <span className="chip text-accent" title="Acesso autorizado">
               <ShieldCheck className="h-3.5 w-3.5" />
               <span className="hidden sm:inline">authorized</span>

@@ -1,7 +1,7 @@
 'use client'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { GraduationCap, Home, Gift, User, Wrench, LifeBuoy, type LucideIcon } from 'lucide-react'
+import { GraduationCap, Home, Gift, User, Wrench, LifeBuoy, Bell, type LucideIcon } from 'lucide-react'
 import { LogoLockup } from './reactor'
 import LogoutButton from './logout-button'
 
@@ -25,6 +25,7 @@ const NAV: NavItem[] = [
   { to: '/ferramentas/gratuitas', label: 'Gratuitas', hint: 'Utilitários rápidos', icon: Gift },
   { to: '/perfil', label: 'Conta', hint: 'Créditos e licenças', icon: User },
   { to: '/suporte', label: 'Suporte', hint: 'Tickets e ajuda', icon: LifeBuoy },
+  { to: '/notificacoes', label: 'Avisos', hint: 'Notificações', icon: Bell },
 ]
 
 export function Sidebar({ active = false, onNavigate }: { active?: boolean; onNavigate?: () => void }) {
