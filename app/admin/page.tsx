@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Key, FileText, Settings, Loader2, PlusCircle, Edit, Trash2, CheckCircle, XCircle } from 'lucide-react'
+import { Key, FileText, Settings, LifeBuoy, Loader2, PlusCircle, Edit, Trash2, CheckCircle, XCircle } from 'lucide-react'
 import LogoutButton from '@/app/components/logout-button'
 import { AppShell } from '@/app/components/app-shell'
 import { PageHeader, Panel, StatusPill, ErrorBanner } from '@/app/components/qc-ui'
@@ -159,6 +159,22 @@ export default function AdminPage() {
       />
 
       <main className="w-full min-w-0 space-y-8">
+        {/* Setor de Suporte */}
+        <Panel className="p-4 sm:p-8">
+          <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
+            <div className="flex items-center gap-3">
+              <LifeBuoy className="h-6 w-6 text-accent" />
+              <div>
+                <h2 className="font-display text-xl font-bold text-ink">Setor de Suporte</h2>
+                <p className="text-sm text-muted">Responda tickets com contexto automático do cliente.</p>
+              </div>
+            </div>
+            <Link href="/admin/suporte" className="btn btn-primary">
+              Abrir tickets
+            </Link>
+          </div>
+        </Panel>
+
         {/* Gestão de Keys */}
         <Panel className="p-4 sm:p-8">
           <div className="mb-6 flex flex-col justify-between gap-4 md:flex-row md:items-center">
